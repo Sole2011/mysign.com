@@ -521,7 +521,7 @@
         <div class="two-fields" id="priceField" hidden>
           <div class="field"><label for="lessonPrice">Your price</label><input id="lessonPrice" name="price" type="number" min="1" max="100000" step="0.01"></div>
           <div class="field"><label for="lessonCurrency">Your currency</label><select id="lessonCurrency" name="currency"><option value="" selected disabled>Choose currency</option><option value="ETB">ETB</option><option value="USD">USD</option><option value="EUR">EUR</option><option value="GBP">GBP</option><option value="KES">KES</option><option value="NGN">NGN</option><option value="ZAR">ZAR</option><option value="CAD">CAD</option><option value="AUD">AUD</option></select></div>
-          <small>Learners pay you directly. Add your Telebirr, CBE Birr, or bank details in your teaching profile.</small>
+          <small id="priceNote">Learners pay you directly. Add your Telebirr, CBE Birr, or bank details in your teaching profile.</small>
         </div>
         <div class="field"><label>Lesson video</label><div class="price-options three">
           <label class="price-option"><input type="radio" name="videoSource" value="upload" checked><span><strong>Upload video</strong><span>From your phone.</span></span></label>
@@ -587,7 +587,7 @@
       <div class="dialog-head"><div><p class="section-kicker">PAYMENT RECEIVED</p><h2 id="recordPaymentTitle">Record payment</h2><p id="recordPaymentIntro"></p></div><button class="icon-close" type="button" data-close="recordPaymentBackdrop" aria-label="Close">×</button></div>
       <form id="recordPaymentForm">
         <input type="hidden" name="requestId">
-        <div class="field"><label for="recordMethod">How were you paid?</label><select id="recordMethod" name="method" required><option value="" disabled>Choose</option><option value="telebirr">Telebirr</option><option value="cbe_birr">CBE Birr</option><option value="mpesa">M-Pesa</option><option value="bank">Bank transfer</option><option value="cash">Cash (in person)</option><option value="other">Other</option></select></div>
+        <div class="field"><label for="recordMethod">How were you paid?</label><select id="recordMethod" name="method" required></select></div>
         <div class="field"><label for="recordReference">Transaction number</label><input id="recordReference" name="reference" maxlength="100" placeholder="e.g. the number in your Telebirr or bank SMS"><small>Saved with this lesson so you can find it later. Leave empty for cash.</small></div>
         <p class="form-notice">After you save, the lesson shows as paid and the learner can watch the paid lesson video.</p>
         <div class="dialog-actions"><button class="button outline" type="button" data-close="recordPaymentBackdrop">Cancel</button><button class="button" type="submit">Save payment</button></div>
@@ -600,7 +600,7 @@
       <div class="dialog-head"><div><p class="section-kicker">PAYMENT PROOF</p><h2 id="paymentProofTitle">I've paid my tutor</h2><p id="paymentProofIntro"></p></div><button class="icon-close" type="button" data-close="paymentProofBackdrop" aria-label="Close">×</button></div>
       <form id="paymentProofForm">
         <input type="hidden" name="requestId">
-        <div class="field"><label for="paymentMethod">How did you pay?</label><select id="paymentMethod" name="method" required><option value="" selected disabled>Choose</option><option value="telebirr">Telebirr</option><option value="cbe_birr">CBE Birr</option><option value="mpesa">M-Pesa</option><option value="bank">Bank transfer</option><option value="cash">Cash (in person)</option><option value="other">Other</option></select></div>
+        <div class="field"><label for="paymentMethod">How did you pay?</label><select id="paymentMethod" name="method" required></select></div>
         <div class="field"><label for="paymentReference">Transaction number</label><input id="paymentReference" name="reference" maxlength="100" placeholder="e.g. the number in your Telebirr or bank SMS"><small>You find it in the SMS or receipt you got after paying.</small></div>
         <div class="field"><label class="drop-zone" for="receiptInput"><span><strong id="receiptLabel">Add a screenshot of your receipt (optional)</strong><span>JPG, PNG, or WebP · only you and your tutor can see it</span></span><input id="receiptInput" name="receipt" type="file" accept="image/jpeg,image/png,image/webp"></label></div>
         <p class="form-notice">My Sign does not handle this money. Only send proof after you have really paid. False payment claims break the community rules.</p>
@@ -805,7 +805,23 @@
     const VIDEO_HOST = "meet.ffmuc.net";
     const CONTACT_EMAIL = "support@accessedsolution.com";
     const REPORT_REASONS = { review_removal: "Review removal request", harassment: "Harassment or abuse", inappropriate: "Inappropriate content", fraud: "Scam or fraud", fake: "Fake profile", irrelevant: "Not a real sign language lesson", other: "Something else" };
-    const PAYMENT_METHODS = { telebirr: "Telebirr", cbe_birr: "CBE Birr", mpesa: "M-Pesa", bank: "Bank transfer", cash: "Cash (in person)", other: "Other" };
+    const PAYMENT_METHODS = { telebirr: "Telebirr", cbe_birr: "CBE Birr", mpesa: "M-Pesa", venmo: "Venmo", paypal: "PayPal", zelle: "Zelle", cashapp: "Cash App", mobile_money: "Mobile money", bank: "Bank transfer", cash: "Cash (in person)", other: "Other" };
+    // Payment choices and examples that fit each country. Learner and tutor are always in the same country.
+    const PAYMENT_SETUP = {
+      ET: { methods: ["telebirr", "cbe_birr", "mpesa", "bank", "cash", "other"], example: "e.g. Telebirr: 09XX XXX XXX (Your name)\nCBE account: 1000XXXXXXXX (Your name)", reference: "e.g. the number in your Telebirr or bank SMS", priceNote: "Learners pay you directly. Add your Telebirr, CBE Birr, or bank details in your teaching profile.", checkThen: "Check your Telebirr, CBE Birr, or bank account, then confirm.", checkFirst: "Check your Telebirr, CBE Birr, or bank account first." },
+      US: { methods: ["venmo", "paypal", "zelle", "cashapp", "bank", "cash", "other"], example: "e.g. Venmo: @your-name\nPayPal: you@example.com\nZelle: your phone number" },
+      KE: { methods: ["mpesa", "bank", "cash", "other"], example: "e.g. M-Pesa: 07XX XXX XXX (Your name)", reference: "e.g. the code in your M-Pesa SMS" },
+      default: { methods: ["paypal", "mobile_money", "bank", "cash", "other"], example: "e.g. PayPal: you@example.com\nBank: bank name and account number", reference: "e.g. the transaction ID from your payment app or bank", priceNote: "Learners pay you directly. Add how learners can pay you in your teaching profile.", checkThen: "Check your payment app or bank account, then confirm.", checkFirst: "Check your payment app or bank account first." }
+    };
+    function paymentSetup() {
+      return { ...PAYMENT_SETUP.default, ...(PAYMENT_SETUP[account?.country] || {}) };
+    }
+    function fillPaymentMethods(select, selected = "") {
+      const methods = [...paymentSetup().methods];
+      if (selected && !methods.includes(selected) && PAYMENT_METHODS[selected]) methods.unshift(selected);
+      select.innerHTML = `<option value="" disabled${selected ? "" : " selected"}>Choose</option>` + methods.map(method => `<option value="${method}">${escapeHTML(PAYMENT_METHODS[method])}</option>`).join("");
+      select.value = selected || "";
+    }
     const PROOF_BUCKET = "payment-proofs";
     const LESSON_REPORT_REASONS = ["irrelevant", "inappropriate", "fraud", "other"];
     const PERSON_REPORT_REASONS = ["harassment", "inappropriate", "fraud", "fake", "other"];
@@ -968,7 +984,7 @@
         <div class="field"><label for="profileCountry">Country</label><input id="profileCountry" value="${escapeHTML(countryName(account.country))}" disabled></div>
         <div class="field"><label for="profileCity">City or area</label><input id="profileCity" name="city" value="${escapeHTML(profile.city || "")}" maxlength="60" placeholder="Where you teach or learn"></div>
         <div class="field"><label for="profileTopics">${teacher ? "Subjects you teach" : "What you want to learn"}</label><input id="profileTopics" name="topics" value="${escapeHTML(profile.topics || "")}" maxlength="120" placeholder="e.g. Everyday conversation"></div>
-        ${teacher ? `<div class="field"><label for="profilePayment">How learners can pay you</label><textarea id="profilePayment" name="payment" maxlength="300" placeholder="e.g. Telebirr: 09XX XXX XXX (Your name)&#10;CBE account: 1000XXXXXXXX (Your name)">${escapeHTML(paymentDetails[account.id] || "")}</textarea><small>Only learners whose request you accept can see this.</small></div>` : ""}
+        ${teacher ? `<div class="field"><label for="profilePayment">How learners can pay you</label><textarea id="profilePayment" name="payment" maxlength="300" placeholder="${escapeHTML(paymentSetup().example)}">${escapeHTML(paymentDetails[account.id] || "")}</textarea><small>Only learners whose request you accept can see this.</small></div>` : ""}
         <div class="field"><label for="profileBio">About you</label><textarea id="profileBio" name="bio" maxlength="500" placeholder="A short introduction">${escapeHTML(profile.bio || "")}</textarea></div>
         <div class="field"><label class="role-option agreement-option"><input name="emailNotifications" type="checkbox" ${account.emailNotifications ? "checked" : ""}><span><strong>Email me about my lessons</strong><span>New requests, accepted lessons, new times, payments, and reviews.</span></span></label></div>
         <button class="button" type="submit">Save profile</button>
@@ -1043,7 +1059,7 @@
           const receiptButton = request.paymentProofPath ? `<button class="inline-link receipt-link" type="button" data-view-receipt="${escapeHTML(request.paymentProofPath)}">View receipt</button>` : "";
           if (teacherView) {
             if (proofSent) {
-              paymentNote = `<small class="payment-note"><strong>${escapeHTML(request.learnerName)} says they paid${price ? ` ${price}` : ""}:</strong>\n${proofSummary}\nCheck your Telebirr, CBE Birr, or bank account, then confirm.</small>${receiptButton}`;
+              paymentNote = `<small class="payment-note"><strong>${escapeHTML(request.learnerName)} says they paid${price ? ` ${price}` : ""}:</strong>\n${proofSummary}\n${escapeHTML(paymentSetup().checkThen)}</small>${receiptButton}`;
               actions.push(`<button class="button small" type="button" data-mark-paid="${escapeHTML(request.id)}" data-method="${escapeHTML(request.paymentMethod || "")}" data-reference="${escapeHTML(request.paymentReference || "")}" data-learner="${escapeHTML(request.learnerName)}" data-price="${price}">Confirm payment received</button><button class="button outline small" type="button" data-reject-payment="${escapeHTML(request.id)}">I didn't receive it</button>`);
             } else {
               const noDetails = !paymentDetails[account.id];
@@ -1469,6 +1485,7 @@
     }
 
     function openPublish() {
+      document.getElementById("priceNote").textContent = paymentSetup().priceNote;
       if (!account) {
         document.querySelector('#joinForm input[name="role"][value="teacher"]').checked = true;
         updateSignupAgreementFields();
@@ -1757,7 +1774,9 @@
         form.reset();
         form.elements.requestId.value = submitPayment.dataset.submitPayment;
         document.getElementById("receiptLabel").textContent = "Add a screenshot of your receipt (optional)";
-        document.getElementById("paymentProofIntro").textContent = `Tell ${submitPayment.dataset.tutorName} how you paid${submitPayment.dataset.price ? ` ${submitPayment.dataset.price}` : ""}. They will check and confirm.`;
+        fillPaymentMethods(form.elements.method);
+        form.elements.reference.placeholder = paymentSetup().reference;
+        document.getElementById("paymentProofIntro").textContent = `${submitPayment.dataset.price ? `Tell ${submitPayment.dataset.tutorName} how you paid ${submitPayment.dataset.price}.` : `Tell ${submitPayment.dataset.tutorName} how you paid.`}\nThey will check and confirm.`;
         openDialog("paymentProofBackdrop");
         return;
       }
@@ -1868,9 +1887,10 @@
         const form = document.getElementById("recordPaymentForm");
         form.reset();
         form.elements.requestId.value = markPaid.dataset.markPaid;
-        form.elements.method.value = markPaid.dataset.method || "";
+        fillPaymentMethods(form.elements.method, markPaid.dataset.method || "");
+        form.elements.reference.placeholder = paymentSetup().reference;
         form.elements.reference.value = markPaid.dataset.reference || "";
-        document.getElementById("recordPaymentIntro").textContent = `Save the payment you received from ${markPaid.dataset.learner || "the learner"}${markPaid.dataset.price ? ` (${markPaid.dataset.price})` : ""}. Check your Telebirr, CBE Birr, or bank account first.`;
+        document.getElementById("recordPaymentIntro").textContent = `${markPaid.dataset.price ? `Save the payment you received from ${markPaid.dataset.learner} (${markPaid.dataset.price}).` : `Save the payment you received from ${markPaid.dataset.learner}.`}\n${paymentSetup().checkFirst}`;
         openDialog("recordPaymentBackdrop");
         return;
       }
