@@ -9,6 +9,24 @@
     if (location.protocol === "http:" && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") location.replace(`https://${location.host}${location.pathname}${location.search}${location.hash}`);
   </script>
   <title>My Sign | Find a Sign Language Tutor</title>
+  <script>
+    // Choose the language before the page appears: saved choice, else the browser's language, else English.
+    (function () {
+      var languages = ["en", "ar", "zh", "fr", "ru", "es", "am"];
+      var saved = null;
+      try { saved = localStorage.getItem("my-sign-language"); } catch (error) {}
+      var browser = (navigator.languages || [navigator.language || "en"]).map(function (code) { return String(code).slice(0, 2).toLowerCase(); });
+      var linked = (location.search.match(/[?&]lang=([a-z]{2})/) || [])[1];
+      if (languages.indexOf(linked) > -1) { saved = linked; try { localStorage.setItem("my-sign-language", linked); } catch (error) {} }
+      var language = languages.indexOf(saved) > -1 ? saved : (browser.filter(function (code) { return languages.indexOf(code) > -1; })[0] || "en");
+      window.MY_SIGN_LANGUAGE = language;
+      document.documentElement.lang = language;
+      document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
+      var fonts = { am: "Noto+Sans+Ethiopic:wght@400;600;700", ar: "Noto+Sans+Arabic:wght@400;600;700", zh: "Noto+Sans+SC:wght@400;600;700" }[language];
+      if (fonts) document.write('<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=' + fonts + '&display=swap">');
+      if (language !== "en") document.write('<script src="i18n/' + language + '.js"><\/script>');
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
@@ -45,12 +63,17 @@
     .top-nav a:hover { color: var(--green); }
     .top-actions { display: flex; align-items: center; gap: 10px; }
     .account-pill { max-width: 145px; overflow: hidden; color: #53655b; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+    .language-select { height: 36px; max-width: 118px; padding: 0 8px; border: 1px solid var(--line); border-radius: 18px; background: #fff; color: var(--ink); font: inherit; font-size: 12px; cursor: pointer; }
+    html[lang="am"] body, html[lang="am"] h1, html[lang="am"] h2, html[lang="am"] .dialog-head h2 { font-family: "Noto Sans Ethiopic", "Nyala", "Kefa", "DM Sans", sans-serif; }
+    html[lang="ar"] body, html[lang="ar"] h1, html[lang="ar"] h2, html[lang="ar"] .dialog-head h2 { font-family: "Noto Sans Arabic", "Segoe UI", "Geeza Pro", "DM Sans", sans-serif; }
+    html[lang="zh"] body, html[lang="zh"] h1, html[lang="zh"] h2, html[lang="zh"] .dialog-head h2 { font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "DM Sans", sans-serif; }
+    html[lang="ar"] *, html[lang="am"] *, html[lang="zh"] * { letter-spacing: 0 !important; }
     .bell-button { position: relative; display: grid; width: 36px; height: 36px; place-items: center; border: 1px solid var(--line); border-radius: 50%; background: #fff; font-size: 16px; cursor: pointer; }
     .bell-button:hover { background: var(--green-soft); }
-    .bell-count { position: absolute; top: -4px; right: -4px; min-width: 19px; height: 19px; padding: 0 5px; border-radius: 99px; background: var(--red); color: #fff; font-size: 10.5px; font-weight: 700; line-height: 19px; text-align: center; }
-    .notification-item { display: grid; width: 100%; gap: 4px; padding: 13px 14px; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+    .bell-count { position: absolute; top: -4px; inset-inline-end: -4px; min-width: 19px; height: 19px; padding: 0 5px; border-radius: 99px; background: var(--red); color: #fff; font-size: 10.5px; font-weight: 700; line-height: 19px; text-align: center; }
+    .notification-item { display: grid; width: 100%; gap: 4px; padding: 13px 14px; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--ink); font: inherit; text-align: start; cursor: pointer; }
     .notification-item:hover { background: #f7faf7; }
-    .notification-item.unread { background: #f2f8f4; box-shadow: inset 3px 0 0 var(--green); }
+    .notification-item.unread { background: #f2f8f4; border-inline-start: 3px solid var(--green); }
     .notification-item strong { font-size: 14px; }
     .notification-item span { color: #3d4f47; font-size: 13px; line-height: 1.5; white-space: pre-line; }
     .notification-item small { color: var(--muted); font-size: 11.5px; }
@@ -86,13 +109,13 @@
     .section-intro { margin: 6px 0 0; color: var(--muted); font-size: 11px; }
     .browse-tools { display: flex; align-items: center; gap: 9px; }
     .search-wrap { position: relative; }
-    .search-icon { position: absolute; top: 50%; left: 11px; color: #74817b; transform: translateY(-50%); }
-    .search-input { width: 285px; height: 42px; padding: 0 11px 0 32px; border: 1px solid var(--line); border-radius: 5px; background: var(--white); color: var(--ink); font-size: 12px; }
+    .search-icon { position: absolute; top: 50%; inset-inline-start: 11px; color: #74817b; transform: translateY(-50%); }
+    .search-input { width: 285px; height: 42px; padding-block: 0; padding-inline: 32px 11px; border: 1px solid var(--line); border-radius: 5px; background: var(--white); color: var(--ink); font-size: 12px; }
     .sort-select { height: 38px; padding: 0 11px; border: 1px solid var(--line); border-radius: 5px; background: var(--white); color: var(--ink); font-size: 11px; }
     .filter-row { display: flex; align-items: center; gap: 7px; overflow-x: auto; padding: 2px 0 15px; }
     .filter { flex: 0 0 auto; min-height: 30px; padding: 0 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--white); color: #56665e; font-size: 10px; cursor: pointer; }
     .filter[aria-pressed="true"] { border-color: var(--green); background: var(--green); color: white; }
-    .filter-label { margin-right: 4px; color: #88938d; font-size: 10px; }
+    .filter-label { margin-inline-end: 4px; color: #88938d; font-size: 10px; }
 
     .lesson-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 17px; }
     .lesson-card { overflow: hidden; border: 1px solid var(--line); border-radius: 7px; background: var(--white); animation: lift-in 340ms ease both; }
@@ -104,9 +127,9 @@
     .lesson-cover-placeholder.pattern-blue { background-color: #e5edf0; background-image: repeating-linear-gradient(0deg, transparent 0 21px, rgb(72 117 137 / 12%) 21px 23px), repeating-linear-gradient(90deg, transparent 0 21px, rgb(72 117 137 / 12%) 21px 23px); }
     .lesson-cover-placeholder.pattern-gold { background-color: #f3efd9; background-image: repeating-linear-gradient(135deg, transparent 0 26px, rgb(148 117 45 / 13%) 26px 29px); }
     .cover-symbol { display: grid; width: 58px; height: 58px; place-items: center; border: 1px solid rgb(23 45 41 / 20%); border-radius: 50%; background: rgb(255 255 255 / 82%); color: var(--green); font-family: Georgia, serif; font-size: 20px; }
-    .price-label { position: absolute; top: 11px; left: 11px; padding: 6px 8px; border-radius: 3px; background: #fff; color: var(--green); font-size: 9px; font-weight: 700; }
+    .price-label { position: absolute; top: 11px; inset-inline-start: 11px; padding: 6px 8px; border-radius: 3px; background: #fff; color: var(--green); font-size: 9px; font-weight: 700; }
     .price-label.paid { background: var(--gold); color: #282d20; }
-    .duration-label { position: absolute; right: 10px; bottom: 10px; padding: 5px 7px; border-radius: 3px; background: rgb(16 33 26 / 77%); color: #fff; font-size: 9px; }
+    .duration-label { position: absolute; inset-inline-end: 10px; bottom: 10px; padding: 5px 7px; border-radius: 3px; background: rgb(16 33 26 / 77%); color: #fff; font-size: 9px; }
     .lesson-content { padding: 14px 15px 13px; }
     .lesson-topline { display: flex; align-items: center; justify-content: space-between; gap: 9px; margin-bottom: 8px; }
     .lesson-category { margin: 0; color: #68786f; font-size: 9px; font-weight: 600; }
@@ -156,7 +179,7 @@
     .how-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .how-card { padding: 22px 24px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
     .how-card h3 { margin: 0 0 12px; font-size: 17px; }
-    .how-card ol { display: grid; gap: 10px; margin: 0; padding-left: 20px; color: #3d4f47; font-size: 14px; line-height: 1.55; }
+    .how-card ol { display: grid; gap: 10px; margin: 0; padding-inline-start: 20px; color: #3d4f47; font-size: 14px; line-height: 1.55; }
     .how-card li::marker { color: var(--green); font-weight: 700; }
     .dashboard-panel.how-it-works { margin: 0 0 18px; padding: 0; border: 0; background: transparent; }
     .dashboard-panel.getting-started { margin-bottom: 18px; border-color: #bcd6c5; background: #f2f8f4; }
@@ -198,7 +221,7 @@
     .danger-panel { border-color: #efd3cd; }
     .danger-panel .button { margin-top: 14px; }
     .dashboard-avatar { display: grid; width: 46px; height: 46px; flex: 0 0 auto; place-items: center; border-radius: 50%; background: var(--green-soft); color: var(--green); font-size: 18px; font-weight: 700; }
-    .conduct-policy { margin: 24px 0 42px; padding: 16px 18px; border-left: 3px solid var(--red); background: #f4efea; }
+    .conduct-policy { margin: 24px 0 42px; padding: 16px 18px; border-inline-start: 3px solid var(--red); background: #f4efea; }
     .conduct-policy h2 { margin-bottom: 7px; font-size: 14px; }
     .conduct-policy p { margin: 0; color: #5f6a64; font-size: 11px; line-height: 1.65; }
     .request-status { display: inline-flex; align-items: center; min-height: 23px; padding: 0 8px; border-radius: 4px; background: #f1f2ed; color: #52645b; font-size: 9px; font-weight: 700; text-transform: capitalize; }
@@ -236,7 +259,7 @@
     .role-card > span { width: 100%; }
     .role-option .role-icon { display: grid; width: 46px; height: 46px; margin: 0 0 12px; place-items: center; border-radius: 50%; background: var(--green-soft); font-size: 23px; line-height: 1; }
     .role-card:has(input:checked) .role-icon { background: #fff; box-shadow: 0 0 0 1.5px rgb(23 97 75 / 25%); }
-    .field .role-card input { position: absolute; top: 16px; right: 16px; margin: 0; }
+    .field .role-card input { position: absolute; top: 16px; inset-inline-end: 16px; margin: 0; }
     .field .role-option input, .field .price-option input { flex: 0 0 auto; width: 20px; height: 20px; min-height: 0; margin: 1px 0 0; padding: 0; border: 1.5px solid #b3c2b8; background: #fff; cursor: pointer; appearance: none; -webkit-appearance: none; transition: border-color 150ms ease, background 150ms ease, box-shadow 150ms ease; }
     .field .role-option input[type="radio"], .field .price-option input[type="radio"] { border-radius: 50%; }
     .field .role-option input[type="checkbox"], .field .price-option input[type="checkbox"] { border-radius: 6px; }
@@ -249,7 +272,7 @@
     .agreement-option.role-option:has(input:checked) { background: transparent; box-shadow: none; }
     .agreement-option strong { font-size: 13.5px; }
     .agreement-option span span { font-size: 12.5px; }
-    .agreement-link { justify-self: start; margin-left: 32px; color: var(--muted); font-size: 13px; }
+    .agreement-link { justify-self: start; margin-inline-start: 32px; color: var(--muted); font-size: 13px; }
     .inline-link.small-link { font-size: 12px; font-weight: 600; }
     .inline-link.receipt-link { display: block; margin-top: 6px; font-size: 12px; }
     .inline-link.report-link { display: block; margin-top: 8px; color: var(--muted); font-size: 11.5px; font-weight: 600; }
@@ -268,7 +291,7 @@
     .drop-zone strong { font-size: 14px; }
     .drop-zone span { display: block; margin-top: 6px; color: var(--muted); font-size: 12px; }
     .drop-zone input { display: none; }
-    .form-notice { margin: 14px 0 0; padding: 12px 14px; border-left: 3px solid var(--gold); border-radius: 8px; background: #faf6ea; color: #5c5338; font-size: 12.5px; line-height: 1.55; }
+    .form-notice { margin: 14px 0 0; padding: 12px 14px; border-inline-start: 3px solid var(--gold); border-radius: 8px; background: #faf6ea; color: #5c5338; font-size: 12.5px; line-height: 1.55; }
     .dialog-actions { display: flex; flex-wrap: wrap; justify-content: end; gap: 10px; margin-top: 22px; }
     .dialog .dialog-actions .button { min-height: 46px; padding: 0 20px; border-radius: 9px; font-size: 14px; }
     .lesson-player { width: 100%; max-height: 340px; border-radius: 5px; background: #172d29; }
@@ -277,10 +300,10 @@
     .video-placeholder p { max-width: 355px; margin: 0; font-size: 11px; line-height: 1.6; }
     .lesson-info a, .section-intro a { color: var(--green); font-weight: 600; }
     .lesson-info { margin: 15px 0; color: #65746b; font-size: 11px; line-height: 1.7; }
-    .payment-note { display: block; margin-top: 6px; padding: 8px 10px; border-left: 3px solid var(--gold); border-radius: 6px; background: #faf6ea; color: #5c5338; white-space: pre-line; }
+    .payment-note { display: block; margin-top: 6px; padding: 8px 10px; border-inline-start: 3px solid var(--gold); border-radius: 6px; background: #faf6ea; color: #5c5338; white-space: pre-line; }
     .payment-note strong { display: inline; margin: 0; color: inherit; font-size: inherit; }
-    .payment-note.done { border-left-color: var(--green); background: var(--green-soft); color: #245b40; }
-    .toast { position: fixed; z-index: 20; right: 18px; bottom: 18px; max-width: calc(100vw - 36px); padding: 12px 15px; border-radius: 5px; background: var(--ink); color: white; font-size: 11px; box-shadow: var(--shadow); }
+    .payment-note.done { border-inline-start-color: var(--green); background: var(--green-soft); color: #245b40; }
+    .toast { position: fixed; z-index: 20; inset-inline-end: 18px; bottom: 18px; max-width: calc(100vw - 36px); padding: 12px 15px; border-radius: 5px; background: var(--ink); color: white; font-size: 11px; box-shadow: var(--shadow); }
     .toast[hidden] { display: none; }
 
     @media (max-width: 850px) {
@@ -333,6 +356,16 @@
       <a href="#teach">For signers</a>
     </nav>
     <div class="top-actions">
+      <label class="sr-only" for="languageSelect">Language</label>
+      <select class="language-select" id="languageSelect" aria-label="Language">
+        <option value="en">English</option>
+        <option value="ar">العربية</option>
+        <option value="zh">中文</option>
+        <option value="fr">Français</option>
+        <option value="ru">Русский</option>
+        <option value="es">Español</option>
+        <option value="am">አማርኛ</option>
+      </select>
       <button class="bell-button" id="notificationsButton" type="button" hidden aria-label="Notifications"><span aria-hidden="true">🔔</span><span class="bell-count" id="notificationCount" hidden></span></button>
       <button class="account-pill" id="accountPill" type="button" hidden></button>
       <button class="button outline small" id="signOutButton" type="button" hidden>Sign out</button>
@@ -484,7 +517,7 @@
         <div class="field"><label for="lessonTitle">Lesson title</label><input id="lessonTitle" name="title" required maxlength="70" placeholder="e.g. Greetings and introductions"></div>
         <div class="field"><label for="lessonDescription">What will learners learn?</label><textarea id="lessonDescription" name="description" maxlength="200" required placeholder="e.g. Basic greetings, names, and how to introduce yourself"></textarea></div>
         <div class="two-fields">
-          <div class="field"><label for="lessonCategory">Topic</label><select id="lessonCategory" name="category"><option>Everyday life</option><option>Community</option><option>Learning basics</option><option>Stories</option></select></div>
+          <div class="field"><label for="lessonCategory">Topic</label><select id="lessonCategory" name="category"><option value="Everyday life">Everyday life</option><option value="Community">Community</option><option value="Learning basics">Learning basics</option><option value="Stories">Stories</option></select></div>
           <div class="field"><label for="creatorName">Your display name</label><input id="creatorName" name="creator" required maxlength="35" placeholder="How learners know you"></div>
         </div>
         <fieldset class="field" style="padding:0;border:0"><legend style="margin-bottom:7px;padding:0">Teaching formats</legend><div class="price-options">
@@ -606,7 +639,7 @@
           <label class="price-option"><input type="radio" name="recommend" value="no"><span><strong>No</strong><span>I would not recommend them.</span></span></label>
         </div></div>
         <div class="field"><label for="reviewFeedback">Feedback</label><textarea id="reviewFeedback" name="feedback" maxlength="1000" placeholder="What went well? What could be better? Be kind and honest."></textarea></div>
-        <div class="dialog-actions"><button class="inline-link" type="button" id="deleteReviewButton" style="margin-right:auto" hidden>Delete review</button><button class="button outline" type="button" data-close="reviewBackdrop">Cancel</button><button class="button" type="submit">Save review</button></div>
+        <div class="dialog-actions"><button class="inline-link" type="button" id="deleteReviewButton" style="margin-inline-end:auto" hidden>Delete review</button><button class="button outline" type="button" data-close="reviewBackdrop">Cancel</button><button class="button" type="submit">Save review</button></div>
       </form>
     </section>
   </div>
@@ -669,6 +702,115 @@
     const SUPABASE_URL = "https://xglmpelvvtbpifesycdp.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_Gj02UqvS-8ZV4KHWddJHpQ_bgzkztqL";
     const db = SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+    // ----- Languages -----
+    // The page is written in English. For other languages, i18n/<language>.js provides
+    // English → translation pairs, and every text on screen is swapped as it appears.
+    // "{0}" in a pair stands for a name, date, or number that stays as it is.
+    const LANGUAGE = window.MY_SIGN_LANGUAGE || "en";
+    const LOCALE = { en: "en", ar: "ar-u-nu-latn", zh: "zh-CN", fr: "fr", ru: "ru", es: "es", am: "am-ET" }[LANGUAGE] || "en";
+    const i18n = (() => {
+      const pairs = LANGUAGE === "en" ? {} : (window.MY_SIGN_I18N || {});
+      const normalize = value => value.replace(/\s+/g, " ").trim();
+      const compile = (key, value) => ({
+        regex: new RegExp("^" + key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\\\{(\d+)\\\}/g, "(?<p$1>.+?)") + "$", "s"),
+        value,
+        weight: key.replace(/\{\d+\}/g, "").length
+      });
+      const tables = { text: new Map(), attr: new Map(), html: new Map(), patterns: [], attrPatterns: [] };
+      for (const [key, value] of Object.entries(pairs)) {
+        if (key.startsWith("@html:")) tables.html.set(normalize(key.slice(6)), value);
+        else if (key.startsWith("@attr:")) /\{\d+\}/.test(key) ? tables.attrPatterns.push(compile(key.slice(6), value)) : tables.attr.set(key.slice(6), value);
+        else if (/\{\d+\}/.test(key)) tables.patterns.push(compile(key, value));
+        else tables.text.set(key, value);
+      }
+      tables.patterns.sort((a, b) => b.weight - a.weight);
+      tables.attrPatterns.sort((a, b) => b.weight - a.weight);
+      return { ...tables, normalize, active: LANGUAGE !== "en" && Object.keys(pairs).length > 0 };
+    })();
+
+    function translateLine(line, forAttribute = false, depth = 0) {
+      const core = i18n.normalize(line);
+      if (!core || depth > 3 || !/\p{L}/u.test(core)) return line;
+      const lead = line.match(/^\s*/)[0];
+      const trail = line.match(/\s*$/)[0];
+      const exact = (forAttribute && i18n.attr.get(core)) || i18n.text.get(core);
+      if (exact) return lead + exact + trail;
+      for (const list of forAttribute ? [i18n.attrPatterns, i18n.patterns] : [i18n.patterns]) {
+        for (const pattern of list) {
+          const match = pattern.regex.exec(core);
+          if (match) return lead + pattern.value.replace(/\{(\d+)\}/g, (_, n) => translateLine(match.groups["p" + n] ?? "", forAttribute, depth + 1)) + trail;
+        }
+      }
+      if (core.includes(" · ")) {
+        const parts = core.split(" · ");
+        const translated = parts.map(part => translateLine(part, forAttribute, depth + 1));
+        if (translated.some((part, index) => part !== parts[index])) return lead + translated.join(" · ") + trail;
+      }
+      return line;
+    }
+
+    function translateText(value, forAttribute = false) {
+      if (!i18n.active || !value) return value;
+      return value.includes("\n") ? value.split("\n").map(line => translateLine(line, forAttribute)).join("\n") : translateLine(value, forAttribute);
+    }
+
+    const SKIP_TRANSLATION = "script, style, textarea, input, [data-no-translate]";
+    function translateTree(root) {
+      if (!i18n.active || !root) return;
+      if (root.nodeType === Node.TEXT_NODE) {
+        if (root.parentElement && !root.parentElement.closest(SKIP_TRANSLATION)) {
+          const translated = translateText(root.nodeValue);
+          if (translated !== root.nodeValue) root.nodeValue = translated;
+        }
+        return;
+      }
+      if (root.nodeType !== Node.ELEMENT_NODE || root.closest(SKIP_TRANSLATION)) return;
+      // Sentences with bold words in the middle are translated as a whole.
+      if (i18n.html.size) {
+        [root, ...root.querySelectorAll("*")].forEach(element => {
+          if (!element.children.length || element.closest(SKIP_TRANSLATION)) return;
+          const translated = i18n.html.get(i18n.normalize(element.innerHTML));
+          if (translated) element.innerHTML = translated;
+        });
+      }
+      [root, ...root.querySelectorAll("[placeholder], [aria-label], [title]")].forEach(translateAttributes);
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      nodes.forEach(translateTree);
+    }
+
+    function translateAttributes(element) {
+      if (element.nodeType !== Node.ELEMENT_NODE) return;
+      for (const name of ["placeholder", "aria-label", "title"]) {
+        const value = element.getAttribute(name);
+        if (!value) continue;
+        const translated = translateText(value, true);
+        if (translated !== value) element.setAttribute(name, translated);
+      }
+    }
+
+    if (i18n.active) {
+      translateTree(document.body);
+      new MutationObserver(records => {
+        for (const record of records) {
+          if (record.type === "childList") record.addedNodes.forEach(translateTree);
+          else if (record.type === "characterData") translateTree(record.target);
+          else if (record.type === "attributes") translateAttributes(record.target);
+        }
+      }).observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["placeholder", "aria-label", "title"] });
+      const nativeConfirm = window.confirm.bind(window);
+      const nativePrompt = window.prompt.bind(window);
+      window.confirm = message => nativeConfirm(translateText(String(message)));
+      window.prompt = (message, value) => nativePrompt(translateText(String(message)), value);
+    }
+
+    document.getElementById("languageSelect").value = LANGUAGE;
+    document.getElementById("languageSelect").addEventListener("change", event => {
+      try { localStorage.setItem("my-sign-language", event.target.value); } catch {}
+      window.location.reload();
+    });
     const VIDEO_BUCKET = "lesson-videos";
     const AVATAR_BUCKET = "avatars";
     // Public Jitsi server that lets anyone start a room without signing in (meet.jit.si requires a moderator login).
@@ -681,7 +823,7 @@
     const PERSON_REPORT_REASONS = ["harassment", "inappropriate", "fraud", "fake", "other"];
     const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
     const COUNTRY_CODES = "AF AX AL DZ AS AD AO AI AG AR AM AW AU AT AZ BS BH BD BB BY BE BZ BJ BM BT BO BQ BA BW BR IO BN BG BF BI CV KH CM CA KY CF TD CL CN CX CC CO KM CG CD CK CR CI HR CU CW CY CZ DK DJ DM DO EC EG SV GQ ER EE SZ ET FK FO FJ FI FR GF PF GA GM GE DE GH GI GR GL GD GP GU GT GG GN GW GY HT VA HN HK HU IS IN ID IR IQ IE IM IL IT JM JP JE JO KZ KE KI XK KP KR KW KG LA LV LB LS LR LY LI LT LU MO MG MW MY MV ML MT MH MQ MR MU YT MX FM MD MC MN ME MS MA MZ MM NA NR NP NL NC NZ NI NE NG NU NF MK MP NO OM PK PW PS PA PG PY PE PH PN PL PT PR QA RE RO RU RW BL SH KN LC MF PM VC WS SM ST SA SN RS SC SL SG SX SK SI SB SO ZA SS ES LK SD SR SJ SE CH SY TW TJ TZ TH TL TG TK TO TT TN TR TM TC TV UG UA AE GB US UY UZ VU VE VN VG VI WF EH YE ZM ZW".split(" ");
-    const regionNames = typeof Intl.DisplayNames === "function" ? new Intl.DisplayNames([navigator.language || "en", "en"], { type: "region" }) : null;
+    const regionNames = typeof Intl.DisplayNames === "function" ? new Intl.DisplayNames([LOCALE, "en"], { type: "region" }) : null;
     function countryName(code) {
       try { return regionNames?.of(code) || code; } catch { return code; }
     }
@@ -1145,7 +1287,7 @@
 
     // All dates and times on the site use the 24-hour clock, e.g. 22 Oct 2026, 14:30.
     function formatDateTime(value) {
-      return new Date(value).toLocaleString(undefined, { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+      return new Date(value).toLocaleString(LOCALE, { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
     }
 
     // signedIn: the dashboard version adds payment-detail tips that are only for members.
@@ -1180,7 +1322,7 @@
     }
     function formatPrice(lesson) {
       const currency = lesson.currency || "ETB";
-      return new Intl.NumberFormat(undefined, { style: "currency", currency, maximumFractionDigits: 2 }).format(Number(lesson.price));
+      return new Intl.NumberFormat(LOCALE, { style: "currency", currency, maximumFractionDigits: 2 }).format(Number(lesson.price));
     }
 
     function renderLessons() {
@@ -1396,7 +1538,7 @@
     updateSignupAgreementFields();
     document.getElementById("joinCountry").insertAdjacentHTML("beforeend", COUNTRY_CODES
       .map(code => ({ code, name: countryName(code) }))
-      .sort((a, b) => a.name.localeCompare(b.name))
+      .sort((a, b) => a.name.localeCompare(b.name, LOCALE))
       .map(country => `<option value="${country.code}">${escapeHTML(country.name)}</option>`).join(""));
     document.getElementById("joinForm").addEventListener("submit", async event => {
       event.preventDefault();
@@ -1562,7 +1704,7 @@
           <small>Reported: ${escapeHTML(report.reported_name)} · ${report.reported_role ? `${report.reported_role === "teacher" ? "Signer / teacher" : "Learner"} · ${escapeHTML(countryName(report.reported_country))}` : "Account deleted"}${report.reported_email ? ` · ${escapeHTML(report.reported_email)}` : ""}</small>
           <small>By: ${escapeHTML(report.reporter_name)} · ${escapeHTML(report.reporter_email)} · ${escapeHTML(formatDateTime(report.created_at))}</small>
           ${report.lesson_title ? `<small>Lesson: ${escapeHTML(report.lesson_title)}</small>` : ""}
-          ${report.review_id ? `<small class="payment-note"><strong>Review ${stars(report.review_rating)}</strong>${report.review_feedback ? `\n${escapeHTML(report.review_feedback)}` : ""}</small>` : report.reason === "review_removal" ? "<small>This review has already been deleted.</small>" : ""}
+          ${report.review_id ? `<small class="payment-note"><strong>${stars(report.review_rating)}</strong>${report.review_feedback ? `\n${escapeHTML(report.review_feedback)}` : ""}</small>` : report.reason === "review_removal" ? "<small>This review has already been deleted.</small>" : ""}
           ${report.details ? `<small class="payment-note">${escapeHTML(report.details)}</small>` : ""}
         </div><div class="dashboard-actions"><span class="request-status ${report.status === "open" ? "pending" : "accepted"}">${report.status}</span>
           ${report.review_id ? `<button class="button danger small" type="button" data-admin-delete-review="${escapeHTML(report.review_id)}">Delete review</button>` : ""}
