@@ -622,5 +622,7 @@ window.MY_SIGN_I18N = {
  "Tell {0} how you paid.": "Indiquez à {0} comment vous avez payé.",
  "They will check and confirm.": "Il ou elle vérifiera et confirmera.",
  "Save the payment you received from {0} ({1}).": "Enregistrez le paiement reçu de {0} ({1}).",
- "Save the payment you received from {0}.": "Enregistrez le paiement reçu de {0}."
+ "Save the payment you received from {0}.": "Enregistrez le paiement reçu de {0}.",
+ "You already have an account with this email. Sign in below. If you forgot your password, press “Forgot password?” to reset it. There is no need to join again.": "Vous avez déjà un compte avec cet e-mail. Connectez-vous ci-dessous. Si vous avez oublié votre mot de passe, appuyez sur « Mot de passe oublié ? » pour le réinitialiser. Inutile de vous inscrire à nouveau.",
+ "Wrong email or password. If you forgot your password, press “Forgot password?” to reset it.": "E-mail ou mot de passe incorrect. Si vous avez oublié votre mot de passe, appuyez sur « Mot de passe oublié ? » pour le réinitialiser."
 };

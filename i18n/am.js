@@ -622,5 +622,7 @@ window.MY_SIGN_I18N = {
  "Tell {0} how you paid.": "እንዴት እንደከፈሉ ለ{0} ይንገሩ።",
  "They will check and confirm.": "ፈትሸው ያረጋግጣሉ።",
  "Save the payment you received from {0} ({1}).": "ከ{0} የተቀበሉትን ክፍያ ({1}) ያስቀምጡ።",
- "Save the payment you received from {0}.": "ከ{0} የተቀበሉትን ክፍያ ያስቀምጡ።"
+ "Save the payment you received from {0}.": "ከ{0} የተቀበሉትን ክፍያ ያስቀምጡ።",
+ "You already have an account with this email. Sign in below. If you forgot your password, press “Forgot password?” to reset it. There is no need to join again.": "በዚህ ኢሜይል አስቀድመው መለያ አለዎት። ከታች ይግቡ። የይለፍ ቃልዎን ከረሱ፣ ዳግም ለማስጀመር «የይለፍ ቃል ረስተዋል?» የሚለውን ይጫኑ። እንደገና መቀላቀል አያስፈልግም።",
+ "Wrong email or password. If you forgot your password, press “Forgot password?” to reset it.": "ኢሜይሉ ወይም የይለፍ ቃሉ ትክክል አይደለም። የይለፍ ቃልዎን ከረሱ፣ ዳግም ለማስጀመር «የይለፍ ቃል ረስተዋል?» የሚለውን ይጫኑ።"
 };

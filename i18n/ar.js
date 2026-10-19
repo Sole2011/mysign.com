@@ -622,5 +622,7 @@ window.MY_SIGN_I18N = {
  "Tell {0} how you paid.": "أخبر {0} كيف دفعت.",
  "They will check and confirm.": "سيتحقق ويؤكد.",
  "Save the payment you received from {0} ({1}).": "احفظ الدفعة التي استلمتها من {0} ({1}).",
- "Save the payment you received from {0}.": "احفظ الدفعة التي استلمتها من {0}."
+ "Save the payment you received from {0}.": "احفظ الدفعة التي استلمتها من {0}.",
+ "You already have an account with this email. Sign in below. If you forgot your password, press “Forgot password?” to reset it. There is no need to join again.": "لديك حساب بالفعل بهذا البريد الإلكتروني. سجّل الدخول أدناه. إذا نسيت كلمة المرور، اضغط على «نسيت كلمة المرور؟» لإعادة تعيينها. لا داعي للانضمام مرة أخرى.",
+ "Wrong email or password. If you forgot your password, press “Forgot password?” to reset it.": "البريد الإلكتروني أو كلمة المرور غير صحيحة. إذا نسيت كلمة المرور، اضغط على «نسيت كلمة المرور؟» لإعادة تعيينها."
 };

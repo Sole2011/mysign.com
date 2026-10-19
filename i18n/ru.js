@@ -622,5 +622,7 @@ window.MY_SIGN_I18N = {
  "Tell {0} how you paid.": "Сообщите {0}, как вы оплатили.",
  "They will check and confirm.": "Преподаватель проверит и подтвердит.",
  "Save the payment you received from {0} ({1}).": "Сохраните платёж, полученный от {0} ({1}).",
- "Save the payment you received from {0}.": "Сохраните платёж, полученный от {0}."
+ "Save the payment you received from {0}.": "Сохраните платёж, полученный от {0}.",
+ "You already have an account with this email. Sign in below. If you forgot your password, press “Forgot password?” to reset it. There is no need to join again.": "У вас уже есть аккаунт с этим адресом. Войдите ниже. Если вы забыли пароль, нажмите «Забыли пароль?», чтобы сбросить его. Регистрироваться снова не нужно.",
+ "Wrong email or password. If you forgot your password, press “Forgot password?” to reset it.": "Неверный адрес или пароль. Если вы забыли пароль, нажмите «Забыли пароль?», чтобы сбросить его."
 };

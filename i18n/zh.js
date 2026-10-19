@@ -622,5 +622,7 @@ window.MY_SIGN_I18N = {
  "Tell {0} how you paid.": "告诉 {0} 你是如何付款的。",
  "They will check and confirm.": "对方会核实并确认。",
  "Save the payment you received from {0} ({1}).": "保存你从 {0} 收到的付款（{1}）。",
- "Save the payment you received from {0}.": "保存你从 {0} 收到的付款。"
+ "Save the payment you received from {0}.": "保存你从 {0} 收到的付款。",
+ "You already have an account with this email. Sign in below. If you forgot your password, press “Forgot password?” to reset it. There is no need to join again.": "这个邮箱已经有账户了。请在下方登录。如果忘记了密码，请点击“忘记密码？”进行重置。不需要再次注册。",
+ "Wrong email or password. If you forgot your password, press “Forgot password?” to reset it.": "邮箱或密码错误。如果忘记了密码，请点击“忘记密码？”进行重置。"
 };

@@ -270,6 +270,7 @@
     .agreement-option strong { font-size: 13.5px; }
     .agreement-option span span { font-size: 12.5px; }
     .agreement-link { justify-self: start; margin-inline-start: 32px; color: var(--muted); font-size: 13px; }
+    .inline-link.attention { padding: 2px 8px; border-radius: 6px; background: #fbf1d3; box-shadow: 0 0 0 2px var(--gold); }
     .inline-link.small-link { font-size: 12px; font-weight: 600; }
     .inline-link.receipt-link { display: block; margin-top: 6px; font-size: 12px; }
     .inline-link.report-link { display: block; margin-top: 8px; color: var(--muted); font-size: 11.5px; font-weight: 600; }
@@ -498,6 +499,7 @@
     <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="signInTitle">
       <div class="dialog-head"><div><p class="section-kicker">WELCOME BACK</p><h2 id="signInTitle">Sign in</h2><p>Sign in with your email and password.</p></div><button class="icon-close" type="button" data-close="signInBackdrop" aria-label="Close">×</button></div>
       <form id="signInForm">
+        <p class="form-notice" id="existingAccountNotice" hidden>You already have an account with this email. Sign in below. If you forgot your password, press “Forgot password?” to reset it. There is no need to join again.</p>
         <div class="field"><label for="signInEmail">Email address</label><input id="signInEmail" name="email" type="email" required autocomplete="email"></div>
         <div class="field"><label for="signInPassword">Password</label><input id="signInPassword" name="password" type="password" required autocomplete="current-password"><button class="inline-link" type="button" id="forgotPasswordButton" style="justify-self:start">Forgot password?</button></div>
         <div class="dialog-actions"><button class="button outline" type="button" data-switch-auth="join">New here? Join</button><button class="button" type="submit">Continue</button></div>
@@ -1564,7 +1566,14 @@
       dashboardMode = true;
       showToast("Signed out.");
     });
+    document.getElementById("signInBackdrop").addEventListener("click", event => {
+      if (event.target.closest("[data-close]")) {
+        document.getElementById("existingAccountNotice").hidden = true;
+        document.getElementById("forgotPasswordButton").classList.remove("attention");
+      }
+    });
     document.querySelectorAll("[data-switch-auth]").forEach(button => button.addEventListener("click", () => {
+      document.getElementById("existingAccountNotice").hidden = true;
       closeDialog(button.closest(".backdrop").id);
       openDialog(button.dataset.switchAuth === "join" ? "joinBackdrop" : "signInBackdrop");
     }));
@@ -1616,6 +1625,14 @@
         }
       });
       setBusy(form, false);
+      // An email that already has an account: send the person to Sign in instead of a new account.
+      // (With email confirmation on, Supabase hides this and returns a user without identities.)
+      const alreadyJoined = error ? (error.code === "user_already_exists" || /already registered/i.test(error.message)) : result.user?.identities?.length === 0;
+      if (alreadyJoined) {
+        closeDialog("joinBackdrop");
+        showExistingAccount(email);
+        return;
+      }
       if (error) {
         showToast(error.message);
         return;
@@ -1627,6 +1644,15 @@
       closeDialog("joinBackdrop");
       showToast(result.session ? `Welcome, ${name}. Your profile is ready.` : "Check your email to confirm your account, then sign in.");
     });
+    function showExistingAccount(email) {
+      const form = document.getElementById("signInForm");
+      form.reset();
+      form.elements.email.value = email;
+      document.getElementById("existingAccountNotice").hidden = false;
+      document.getElementById("forgotPasswordButton").classList.add("attention");
+      openDialog("signInBackdrop");
+      form.elements.password.focus();
+    }
     document.getElementById("signInForm").addEventListener("submit", async event => {
       event.preventDefault();
       if (!requireDatabase()) return;
@@ -1639,9 +1665,16 @@
       });
       setBusy(form, false);
       if (error) {
-        showToast(error.message);
+        if (error.code === "invalid_credentials" || /invalid login credentials/i.test(error.message)) {
+          showToast("Wrong email or password. If you forgot your password, press “Forgot password?” to reset it.");
+          document.getElementById("forgotPasswordButton").classList.add("attention");
+        } else {
+          showToast(error.message);
+        }
         return;
       }
+      document.getElementById("existingAccountNotice").hidden = true;
+      document.getElementById("forgotPasswordButton").classList.remove("attention");
       dashboardMode = true;
       dashboardTab = "overview";
       form.reset();
@@ -2540,13 +2573,18 @@
        "become a member",
        "signing up",
        "registration",
-       "joining"
+       "joining",
+       "already have an account",
+       "already registered",
+       "join again",
+       "same email"
       ],
       "steps": [
        "Press Join at the top of the page.",
        "Enter your name, email address, and a password (at least 8 characters).",
        "Choose your country and whether you are a learner or a Deaf signer / teacher.",
-       "Confirm you are 18 or older, accept the rules, and press Join."
+       "Confirm you are 18 or older, accept the rules, and press Join.",
+       "Already have an account? Don't join again with the same email. Press “Already joined? Sign in”, or “Forgot password?” if you can't remember your password."
       ],
       "action": [
        "Join now",
@@ -2612,13 +2650,18 @@
        "can't log in",
        "cannot log in",
        "password not working",
-       "wrong password"
+       "wrong password",
+       "already registered",
+       "user already registered",
+       "join again",
+       "same email"
       ],
       "steps": [
        "Press Join, then “Already joined? Sign in”, then “Forgot password?”.",
        "Enter your email address and press Send reset link.",
        "Open the email and choose a new password.",
-       "No email? Write to support@accessedsolution.com and we will help you."
+       "No email? Write to support@accessedsolution.com and we will help you.",
+       "Don't create a new account with the same email. Reset your password instead."
       ],
       "popular": true
      },
