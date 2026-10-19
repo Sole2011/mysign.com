@@ -1550,7 +1550,8 @@
     }
 
     document.querySelectorAll("#publishHero, #publishBand").forEach(button => button.addEventListener("click", openPublish));
-    document.getElementById("joinButton").addEventListener("click", () => openDialog("joinBackdrop"));
+    // The top Join button opens Sign in first; new people continue with "New here? Join".
+    document.getElementById("joinButton").addEventListener("click", () => openDialog("signInBackdrop"));
     document.getElementById("accountPill").addEventListener("click", () => {
       dashboardMode = true;
       updateAccountHeader();
@@ -2581,10 +2582,11 @@
       ],
       "steps": [
        "Press Join at the top of the page.",
+       "In the window that opens, press “New here? Join”.",
        "Enter your name, email address, and a password (at least 8 characters).",
        "Choose your country and whether you are a learner or a Deaf signer / teacher.",
        "Confirm you are 18 or older, accept the rules, and press Join.",
-       "Already have an account? Don't join again with the same email. Press “Already joined? Sign in”, or “Forgot password?” if you can't remember your password."
+       "Already have an account? Don't join again with the same email. Just sign in, or press “Forgot password?” if you can't remember your password."
       ],
       "action": [
        "Join now",
@@ -2606,8 +2608,7 @@
        "signing in"
       ],
       "steps": [
-       "Press Join at the top of the page.",
-       "At the bottom of the window, press “Already joined? Sign in”.",
+       "Press Join at the top of the page. The Sign in window opens.",
        "Enter your email address and password, then press Continue."
       ],
       "action": [
@@ -2657,7 +2658,7 @@
        "same email"
       ],
       "steps": [
-       "Press Join, then “Already joined? Sign in”, then “Forgot password?”.",
+       "Press Join at the top of the page, then press “Forgot password?”.",
        "Enter your email address and press Send reset link.",
        "Open the email and choose a new password.",
        "No email? Write to support@accessedsolution.com and we will help you.",
