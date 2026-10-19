@@ -300,7 +300,33 @@
     .payment-note { display: block; margin-top: 6px; padding: 8px 10px; border-inline-start: 3px solid var(--gold); border-radius: 6px; background: #faf6ea; color: #5c5338; white-space: pre-line; }
     .payment-note strong { display: inline; margin: 0; color: inherit; font-size: inherit; }
     .payment-note.done { border-inline-start-color: var(--green); background: var(--green-soft); color: #245b40; }
-    .toast { position: fixed; z-index: 20; inset-inline-end: 18px; bottom: 18px; max-width: calc(100vw - 36px); padding: 12px 15px; border-radius: 5px; background: var(--ink); color: white; font-size: 11px; box-shadow: var(--shadow); }
+    .amelework { position: fixed; z-index: 15; inset-inline-end: 18px; bottom: 18px; }
+    .amelework-launcher { display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 18px; border: 0; border-radius: 99px; background: var(--green); color: #fff; font: inherit; font-size: 14px; font-weight: 700; box-shadow: 0 10px 28px rgb(10 32 25 / 25%); cursor: pointer; }
+    .amelework-launcher:hover { background: var(--green-dark); }
+    .amelework-panel { display: flex; width: min(380px, calc(100vw - 24px)); height: min(560px, calc(100vh - 110px)); flex-direction: column; overflow: hidden; border-radius: 16px; background: #fff; box-shadow: 0 24px 70px rgb(10 32 25 / 30%); }
+    .amelework-panel[hidden] { display: none; }
+    .amelework-head { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-top: 5px solid var(--green); border-bottom: 1px solid var(--line); }
+    .amelework-head > div { display: grid; flex: 1; }
+    .amelework-head strong { font-size: 15px; }
+    .amelework-head small { color: var(--muted); font-size: 12px; }
+    .amelework-avatar { display: grid; width: 38px; height: 38px; flex: 0 0 auto; place-items: center; border-radius: 50%; background: var(--gold); color: #282d20; font-family: "DM Serif Display", Georgia, serif; font-size: 19px; }
+    .amelework-messages { display: grid; flex: 1; align-content: start; gap: 10px; overflow-y: auto; padding: 14px; background: #f7f8f3; }
+    .amelework-message { max-width: 90%; padding: 10px 13px; border-radius: 14px; font-size: 13.5px; line-height: 1.5; }
+    .amelework-message.bot { justify-self: start; border: 1px solid var(--line); border-end-start-radius: 4px; background: #fff; color: var(--ink); }
+    .amelework-message.user { justify-self: end; border-end-end-radius: 4px; background: var(--green); color: #fff; }
+    .amelework-message p { margin: 0 0 8px; }
+    .amelework-message p:last-child { margin-bottom: 0; }
+    .amelework-message small { display: block; margin: 4px 0 6px; color: var(--muted); font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; }
+    .amelework-message ol { margin: 6px 0 0; padding-inline-start: 18px; }
+    .amelework-message li { margin-bottom: 4px; }
+    .amelework-message .button { margin-top: 8px; }
+    .amelework-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+    .amelework-chip { padding: 6px 10px; border: 1px solid #bcd6c5; border-radius: 99px; background: #f2f8f4; color: var(--green); font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+    .amelework-chip:hover { background: var(--green-soft); }
+    .amelework-form { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--line); }
+    .amelework-form input { flex: 1; min-width: 0; min-height: 40px; padding: 0 12px; border: 1.5px solid #dde4dc; border-radius: 99px; font: inherit; font-size: 14px; }
+    .amelework-form input:focus { border-color: var(--green); outline: none; box-shadow: 0 0 0 3px rgb(23 97 75 / 12%); }
+    .toast { position: fixed; z-index: 20; inset-inline-end: 18px; bottom: 84px; max-width: calc(100vw - 36px); padding: 12px 15px; border-radius: 5px; background: var(--ink); color: white; font-size: 11px; box-shadow: var(--shadow); }
     .toast[hidden] { display: none; }
 
     @media (max-width: 850px) {
@@ -678,6 +704,23 @@
         <p><strong>Contact.</strong> Questions or requests: <a href="mailto:support@accessedsolution.com">support@accessedsolution.com</a>.</p>
       </div>
       <div class="dialog-actions"><button class="button" type="button" data-close="privacyBackdrop">Close</button></div>
+    </section>
+  </div>
+
+  <div class="amelework" data-no-translate>
+    <button class="amelework-launcher" id="ameleworkLauncher" type="button" aria-expanded="false" aria-controls="ameleworkPanel"><span aria-hidden="true">💬</span> Ask Amelework</button>
+    <section class="amelework-panel" id="ameleworkPanel" role="dialog" aria-labelledby="ameleworkTitle" hidden>
+      <header class="amelework-head">
+        <span class="amelework-avatar" aria-hidden="true">A</span>
+        <div><strong id="ameleworkTitle">Amelework</strong><small>My Sign helper</small></div>
+        <button class="icon-close" type="button" id="ameleworkClose" aria-label="Close chat">×</button>
+      </header>
+      <div class="amelework-messages" id="ameleworkMessages" aria-live="polite"></div>
+      <form class="amelework-form" id="ameleworkForm">
+        <label class="sr-only" for="ameleworkInput">Your question</label>
+        <input id="ameleworkInput" name="question" maxlength="200" autocomplete="off" placeholder="Type your question…">
+        <button class="button small" type="submit">Send</button>
+      </form>
     </section>
   </div>
 
@@ -2478,6 +2521,566 @@
       await loadAccountData();
       document.getElementById("dashboardView").scrollIntoView({ behavior: "smooth", block: "start" });
       showToast(`Lesson published for learners in ${countryName(account.country)}.`);
+    });
+
+    // ----- Amelework: the built-in help chat (English only, no AI) -----
+    // Each topic lists the words people might type; the topic with the most matching words answers.
+    const AMELEWORK_TOPICS = [
+     {
+      "id": "join",
+      "title": "How to join My Sign",
+      "keywords": [
+       "join",
+       "sign up",
+       "signup",
+       "register",
+       "create account",
+       "new account",
+       "create an account",
+       "become a member",
+       "signing up",
+       "registration",
+       "joining"
+      ],
+      "steps": [
+       "Press Join at the top of the page.",
+       "Enter your name, email address, and a password (at least 8 characters).",
+       "Choose your country and whether you are a learner or a Deaf signer / teacher.",
+       "Confirm you are 18 or older, accept the rules, and press Join."
+      ],
+      "action": [
+       "Join now",
+       "join"
+      ],
+      "popular": true
+     },
+     {
+      "id": "signin",
+      "title": "How to sign in",
+      "keywords": [
+       "sign in",
+       "signin",
+       "log in",
+       "login",
+       "log into",
+       "open my account",
+       "logging in",
+       "signing in"
+      ],
+      "steps": [
+       "Press Join at the top of the page.",
+       "At the bottom of the window, press “Already joined? Sign in”.",
+       "Enter your email address and password, then press Continue."
+      ],
+      "action": [
+       "Sign in",
+       "signin"
+      ],
+      "popular": true
+     },
+     {
+      "id": "signout",
+      "title": "How to sign out",
+      "keywords": [
+       "sign out",
+       "signout",
+       "log out",
+       "logout",
+       "log off",
+       "exit my account",
+       "leave my account",
+       "logging out",
+       "signing out"
+      ],
+      "steps": [
+       "Make sure you are signed in.",
+       "Press Sign out at the top right of the page.",
+       "On a shared phone or computer, always sign out when you finish."
+      ],
+      "popular": true
+     },
+     {
+      "id": "forgot",
+      "title": "Forgot your password",
+      "keywords": [
+       "forgot",
+       "forget",
+       "reset password",
+       "lost password",
+       "can't sign in",
+       "cannot sign in",
+       "can't log in",
+       "cannot log in",
+       "password not working",
+       "wrong password"
+      ],
+      "steps": [
+       "Press Join, then “Already joined? Sign in”, then “Forgot password?”.",
+       "Enter your email address and press Send reset link.",
+       "Open the email and choose a new password.",
+       "No email? Write to support@accessedsolution.com and we will help you."
+      ],
+      "popular": true
+     },
+     {
+      "id": "changepw",
+      "title": "Change your password",
+      "keywords": [
+       "change password",
+       "change my password",
+       "new password",
+       "update password"
+      ],
+      "steps": [
+       "Sign in and open My profile (teachers: Teaching profile).",
+       "Scroll down to Change password.",
+       "Enter your current password and the new one twice, then press Change password."
+      ],
+      "action": [
+       "Open my profile",
+       "profile"
+      ]
+     },
+     {
+      "id": "language",
+      "title": "Change the language",
+      "keywords": [
+       "language",
+       "translate",
+       "translation",
+       "amharic",
+       "arabic",
+       "chinese",
+       "french",
+       "russian",
+       "spanish",
+       "english"
+      ],
+      "steps": [
+       "Use the language menu at the top right of the page.",
+       "Choose English, العربية, 中文, Français, Русский, Español, or አማርኛ.",
+       "The page reloads in that language, and My Sign remembers your choice."
+      ],
+      "action": [
+       "Open the language menu",
+       "language"
+      ],
+      "popular": true
+     },
+     {
+      "id": "findtutor",
+      "title": "Find a tutor and request a lesson",
+      "keywords": [
+       "find a tutor",
+       "find tutor",
+       "find a teacher",
+       "find teacher",
+       "request",
+       "book",
+       "booking",
+       "connect",
+       "learn sign language",
+       "take a lesson",
+       "get a tutor"
+      ],
+      "steps": [
+       "Join as a learner, then open the tutor list or your Community tab.",
+       "Press Connect on a tutor, or Request a lesson on one of their lessons.",
+       "Choose online or in person, pick a date and time, write a short message, and press Send request.",
+       "The tutor accepts or declines. You see the answer in My requests."
+      ],
+      "action": [
+       "Browse tutors",
+       "browse"
+      ],
+      "popular": true
+     },
+     {
+      "id": "postlesson",
+      "title": "Post a lesson (teachers)",
+      "keywords": [
+       "post a lesson",
+       "post lesson",
+       "add a lesson",
+       "add lesson",
+       "publish",
+       "share a lesson",
+       "upload",
+       "become a tutor",
+       "become a teacher",
+       "teach sign language",
+       "share my lessons"
+      ],
+      "steps": [
+       "Join as a Deaf signer / teacher and sign in.",
+       "Press + Add a lesson.",
+       "Add a title and one sentence about what you teach.",
+       "Upload a short video, paste a YouTube link, or choose No video for live lessons.",
+       "Choose free or paid, then press Publish lesson."
+      ],
+      "action": [
+       "Add a lesson",
+       "publish"
+      ],
+      "popular": true
+     },
+     {
+      "id": "video",
+      "title": "Start a video lesson",
+      "keywords": [
+       "video",
+       "call",
+       "meeting",
+       "camera",
+       "microphone",
+       "online lesson",
+       "jitsi",
+       "moderator",
+       "room"
+      ],
+      "steps": [
+       "Video lessons work after the tutor accepts an online request.",
+       "At the lesson time, open My requests (teachers: Requests).",
+       "Press 🎥 Start video lesson. You both join the same private room.",
+       "Allow the camera and microphone when the browser asks."
+      ]
+     },
+     {
+      "id": "payment",
+      "title": "How payment works",
+      "keywords": [
+       "pay",
+       "payment",
+       "paid",
+       "price",
+       "money",
+       "telebirr",
+       "cbe",
+       "paypal",
+       "venmo",
+       "zelle",
+       "m-pesa",
+       "receipt",
+       "transaction",
+       "collect later",
+       "cost",
+       "fee"
+      ],
+      "steps": [
+       "My Sign does not handle money. Learners pay the tutor directly.",
+       "After the tutor accepts, the learner sees how to pay and presses “I've paid” with the transaction number.",
+       "The tutor checks and presses Confirm payment received or Record payment.",
+       "Tutors can also choose Collect later, for example to be paid in person."
+      ],
+      "popular": true
+     },
+     {
+      "id": "time",
+      "title": "Change the lesson time",
+      "keywords": [
+       "time",
+       "reschedule",
+       "change time",
+       "date",
+       "missed",
+       "late",
+       "new time",
+       "schedule",
+       "postpone"
+      ],
+      "steps": [
+       "Open the request in My requests (teachers: Requests).",
+       "Press Suggest new time and pick a new date and time.",
+       "The other person can accept it, decline it, or suggest another time."
+      ]
+     },
+     {
+      "id": "review",
+      "title": "Ratings and reviews",
+      "keywords": [
+       "review",
+       "rate",
+       "rating",
+       "stars",
+       "feedback",
+       "recommend"
+      ],
+      "steps": [
+       "After a lesson time has passed, press ★ Rate & review on the request.",
+       "Give 1–5 stars, say if you recommend them, and write feedback.",
+       "Everyone on My Sign in your country can see reviews.",
+       "If a review about you is unfair, open My profile and press “Ask the admin to remove this review”."
+      ]
+     },
+     {
+      "id": "country",
+      "title": "Why do I only see my country?",
+      "keywords": [
+       "country",
+       "other country",
+       "change country",
+       "abroad",
+       "other countries",
+       "region",
+       "nation"
+      ],
+      "steps": [
+       "Members choose their country when joining.",
+       "You can only see and contact tutors and learners in that same country.",
+       "Your country cannot be changed later. Write to support@accessedsolution.com if you chose the wrong one."
+      ]
+     },
+     {
+      "id": "profile",
+      "title": "Edit your profile and picture",
+      "keywords": [
+       "profile",
+       "picture",
+       "photo",
+       "avatar",
+       "edit profile",
+       "my name",
+       "bio",
+       "city"
+      ],
+      "steps": [
+       "Sign in and open My profile (teachers: Teaching profile).",
+       "Change your name, city, topics, and About you, then press Save profile.",
+       "Press Upload picture to add a profile photo."
+      ],
+      "action": [
+       "Open my profile",
+       "profile"
+      ]
+     },
+     {
+      "id": "delete",
+      "title": "Delete your account",
+      "keywords": [
+       "delete account",
+       "delete my account",
+       "remove account",
+       "remove my account",
+       "close account",
+       "close my account",
+       "delete my data",
+       "deactivate"
+      ],
+      "steps": [
+       "Sign in and open My profile (teachers: Teaching profile).",
+       "Scroll down to Delete account and press Delete my account.",
+       "Type DELETE to confirm. This cannot be undone."
+      ],
+      "action": [
+       "Open my profile",
+       "profile"
+      ]
+     },
+     {
+      "id": "report",
+      "title": "Report a problem or stay safe",
+      "keywords": [
+       "report",
+       "harassment",
+       "abuse",
+       "safety",
+       "safe",
+       "scam",
+       "fraud",
+       "unsafe",
+       "block",
+       "bad behavior",
+       "threat",
+       "harass",
+       "harassing",
+       "harassed",
+       "bully",
+       "bullying",
+       "rude",
+       "threatening",
+       "inappropriate"
+      ],
+      "steps": [
+       "Inside a lesson, press “Report this lesson” if it is not real teaching or is inappropriate.",
+       "On a lesson request, press “Report a problem” to report the other person.",
+       "Only My Sign administrators see reports. In an emergency, contact local emergency services."
+      ]
+     },
+     {
+      "id": "notifications",
+      "title": "Notifications",
+      "keywords": [
+       "notification",
+       "notifications",
+       "bell",
+       "email",
+       "emails",
+       "alert",
+       "inbox"
+      ],
+      "steps": [
+       "When you are signed in, the 🔔 bell at the top shows new events.",
+       "My Sign also emails you about requests, answers, payments, and reviews.",
+       "To stop emails, open My profile and untick “Email me about my lessons”."
+      ]
+     },
+     {
+      "id": "support",
+      "title": "Contact a person",
+      "keywords": [
+       "contact",
+       "support",
+       "human",
+       "person",
+       "admin",
+       "talk to someone",
+       "help me",
+       "problem"
+      ],
+      "steps": [
+       "Write to support@accessedsolution.com.",
+       "Tell us your email address and what happened."
+      ]
+     }
+    ];
+
+    function ameleworkMatch(question) {
+      const text = ` ${question.toLowerCase().replace(/[^a-z0-9\s'-]/g, " ").replace(/\s+/g, " ")} `;
+      let best = null;
+      for (const topic of AMELEWORK_TOPICS) {
+        let score = 0;
+        for (const keyword of topic.keywords) {
+          if (text.includes(` ${keyword} `) || text.includes(` ${keyword}s `)) score += 1 + keyword.split(" ").length;
+        }
+        if (score && (!best || score > best.score)) best = { topic, score };
+      }
+      return best?.topic || null;
+    }
+
+    function ameleworkAdd(role, content) {
+      const bubble = document.createElement("div");
+      bubble.className = `amelework-message ${role}`;
+      if (typeof content === "string") bubble.textContent = content;
+      else bubble.append(content);
+      const list = document.getElementById("ameleworkMessages");
+      list.append(bubble);
+      list.scrollTop = list.scrollHeight;
+    }
+
+    function ameleworkChips(topics) {
+      const wrap = document.createElement("div");
+      wrap.className = "amelework-chips";
+      topics.forEach(topic => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "amelework-chip";
+        chip.dataset.ameleworkTopic = topic.id;
+        chip.textContent = topic.title;
+        wrap.append(chip);
+      });
+      return wrap;
+    }
+
+    function ameleworkAnswer(topic) {
+      const answer = document.createElement("div");
+      const title = document.createElement("strong");
+      title.textContent = topic.title;
+      const steps = document.createElement("ol");
+      topic.steps.forEach(step => {
+        const item = document.createElement("li");
+        item.textContent = step;
+        steps.append(item);
+      });
+      answer.append(title, steps);
+      if (topic.action) {
+        const action = document.createElement("button");
+        action.type = "button";
+        action.className = "button small";
+        action.dataset.ameleworkAction = topic.action[1];
+        action.textContent = topic.action[0];
+        answer.append(action);
+      }
+      ameleworkAdd("bot", answer);
+    }
+
+    function ameleworkReply(question) {
+      const topic = ameleworkMatch(question);
+      if (topic) {
+        ameleworkAnswer(topic);
+        return;
+      }
+      const fallback = document.createElement("div");
+      const text = document.createElement("p");
+      text.textContent = "I'm not sure I understood. Here are some topics I can help with:";
+      const help = document.createElement("p");
+      help.textContent = "Still need help? Write to support@accessedsolution.com.";
+      fallback.append(text, ameleworkChips(AMELEWORK_TOPICS), help);
+      ameleworkAdd("bot", fallback);
+    }
+
+    function ameleworkAction(action) {
+      setAmeleworkOpen(false);
+      if (action === "join") openDialog("joinBackdrop");
+      else if (action === "signin") openDialog("signInBackdrop");
+      else if (action === "publish") openPublish();
+      else if (action === "language") {
+        const select = document.getElementById("languageSelect");
+        select.focus();
+        try { select.showPicker?.(); } catch {}
+      } else if (action === "browse") {
+        dashboardMode = false;
+        updateAccountHeader();
+        document.getElementById("browse").scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (action === "profile") {
+        if (!account) {
+          openDialog("signInBackdrop");
+          return;
+        }
+        dashboardMode = true;
+        dashboardTab = "profile";
+        updateAccountHeader();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
+
+    function setAmeleworkOpen(open) {
+      const panel = document.getElementById("ameleworkPanel");
+      panel.hidden = !open;
+      document.getElementById("ameleworkLauncher").setAttribute("aria-expanded", String(open));
+      document.getElementById("ameleworkLauncher").hidden = open;
+      if (open && !document.getElementById("ameleworkMessages").children.length) {
+        const hello = document.createElement("div");
+        const text = document.createElement("p");
+        text.textContent = "Hi! I'm Amelework, the My Sign helper. Ask me how to use the site, or choose a topic below.";
+        const label = document.createElement("small");
+        label.textContent = "Popular questions";
+        hello.append(text, label, ameleworkChips(AMELEWORK_TOPICS.filter(topic => topic.popular)));
+        ameleworkAdd("bot", hello);
+      }
+      if (open) document.getElementById("ameleworkInput").focus();
+    }
+
+    document.getElementById("ameleworkLauncher").addEventListener("click", () => setAmeleworkOpen(true));
+    document.getElementById("ameleworkClose").addEventListener("click", () => setAmeleworkOpen(false));
+    document.getElementById("ameleworkForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const input = document.getElementById("ameleworkInput");
+      const question = input.value.trim();
+      if (!question) return;
+      ameleworkAdd("user", question);
+      input.value = "";
+      ameleworkReply(question);
+    });
+    document.getElementById("ameleworkMessages").addEventListener("click", event => {
+      const chip = event.target.closest("[data-amelework-topic]");
+      if (chip) {
+        const topic = AMELEWORK_TOPICS.find(item => item.id === chip.dataset.ameleworkTopic);
+        ameleworkAdd("user", topic.title);
+        ameleworkAnswer(topic);
+        return;
+      }
+      const action = event.target.closest("[data-amelework-action]");
+      if (action) ameleworkAction(action.dataset.ameleworkAction);
     });
 
     updateAccountHeader();
