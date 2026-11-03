@@ -2557,7 +2557,7 @@
       showToast(`Lesson published for learners in ${countryName(account.country)}.`);
     });
 
-    // ----- Amelework: the built-in help chat (English only, no AI) -----
+    // ----- Amelework: the built-in help chat (English only; AI answers via Gemini, keyword answers as backup) -----
     // Each topic lists the words people might type; the topic with the most matching words answers.
     const AMELEWORK_TOPICS = [
      {
@@ -3062,6 +3062,39 @@
       ameleworkAdd("bot", fallback);
     }
 
+    // Ask the AI (Supabase Edge Function → Gemini). If anything goes wrong, use the keyword answers.
+    const ameleworkHistory = [];
+    let ameleworkBusy = false;
+    async function ameleworkAsk(question) {
+      if (ameleworkBusy) return;
+      // Questions that clearly match a topic get the exact step-by-step answer.
+      const topic = ameleworkMatch(question);
+      if (topic || !db) {
+        ameleworkReply(question);
+        return;
+      }
+      ameleworkBusy = true;
+      ameleworkHistory.push({ role: "user", text: question });
+      const waiting = document.createElement("div");
+      waiting.className = "amelework-message bot";
+      waiting.textContent = "Thinking…";
+      document.getElementById("ameleworkMessages").append(waiting);
+      try {
+        const { data, error } = await db.functions.invoke("amelework", { body: { messages: ameleworkHistory } });
+        if (error || !data?.reply) throw error || new Error("empty");
+        waiting.textContent = data.reply;
+        ameleworkHistory.push({ role: "bot", text: data.reply });
+      } catch {
+        waiting.remove();
+        ameleworkHistory.pop();
+        ameleworkReply(question);
+      } finally {
+        ameleworkBusy = false;
+        const list = document.getElementById("ameleworkMessages");
+        list.scrollTop = list.scrollHeight;
+      }
+    }
+
     function ameleworkAction(action) {
       setAmeleworkOpen(false);
       if (action === "join") openDialog("joinBackdrop");
@@ -3113,7 +3146,7 @@
       if (!question) return;
       ameleworkAdd("user", question);
       input.value = "";
-      ameleworkReply(question);
+      ameleworkAsk(question);
     });
     document.getElementById("ameleworkMessages").addEventListener("click", event => {
       const chip = event.target.closest("[data-amelework-topic]");
