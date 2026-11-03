@@ -8,7 +8,7 @@
     // Always use the secure address (GitHub also redirects, but this works even before its cache updates).
     if (location.protocol === "http:" && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") location.replace(`https://${location.host}${location.pathname}${location.search}${location.hash}`);
   </script>
-  <title>My Sign | Find a Sign Language Tutor</title>
+  <title>My Sign | Find a Tutor for Anything</title>
   <script>
     // Choose the language before the page appears: saved choice, else the browser's language, else English.
     (function () {
@@ -377,7 +377,7 @@
     <nav class="top-nav" aria-label="Main navigation">
       <a href="#browse">Explore lessons</a>
       <a href="#how-it-works">How it works</a>
-      <a href="#teach">For signers</a>
+      <a href="#teach">For tutors</a>
     </nav>
     <div class="top-actions">
       <label class="sr-only" for="languageSelect">Language</label>
@@ -401,20 +401,20 @@
     <div class="shell" id="top">
       <section class="hero public-only" aria-labelledby="heroTitle">
         <div class="hero-copy">
-          <p class="overline">SIGN LANGUAGE TUTORING</p>
-          <h1 id="heroTitle">Find a sign language tutor</h1>
-          <p>Learn one-to-one with Deaf signers and experienced tutors. Compare free and paid lessons, then choose the right teacher for you.</p>
+          <p class="overline">ONE-TO-ONE TUTORING</p>
+          <h1 id="heroTitle">Find a tutor for anything you want to learn</h1>
+          <p>Learn one-to-one with experienced tutors in the subjects you care about. Compare free and paid lessons, then choose the right teacher for you.</p>
           <form class="hero-search" id="teacherSearchForm">
             <label class="search-wrap"><span class="search-icon" aria-hidden="true">⌕</span><span class="sr-only">Search tutors and subjects</span><input class="search-input" id="searchInput" type="search" placeholder="What would you like to learn?"></label>
             <button class="button" type="submit">Find tutors</button>
           </form>
-          <button class="hero-link" id="publishHero" type="button">Are you a signer or teacher? Share a lesson</button>
+          <button class="hero-link" id="publishHero" type="button">Are you a tutor? Share a lesson</button>
         </div>
       </section>
 
       <section class="browse public-only" id="browse" aria-labelledby="browseTitle">
         <div class="browse-head">
-          <div><p class="section-kicker">TUTOR DIRECTORY</p><h2 id="browseTitle">Browse sign language tutors</h2><p class="section-intro" id="browseIntro">Choose a free lesson or a paid session with a tutor.</p></div>
+          <div><p class="section-kicker">TUTOR DIRECTORY</p><h2 id="browseTitle">Browse tutors</h2><p class="section-intro" id="browseIntro">Choose a free lesson or a paid session with a tutor.</p></div>
           <div class="browse-tools">
             <label class="sr-only" for="sortLessons">Sort lessons</label><select class="sort-select" id="sortLessons"><option value="featured">Featured</option><option value="free">Free first</option></select>
           </div>
@@ -436,7 +436,7 @@
       </section>
 
       <section class="creator-band public-only" id="teach" aria-labelledby="creatorTitle">
-        <div><p class="section-kicker">FOR SIGNERS &amp; TEACHERS</p><h2 id="creatorTitle">Your signs can open doors.</h2><p>Share what you know. Choose what to make free, and set a fair price for the rest.</p></div>
+        <div><p class="section-kicker">FOR TUTORS</p><h2 id="creatorTitle">Your knowledge can open doors.</h2><p>Share what you know. Choose what to make free, and set a fair price for the rest.</p></div>
         <button class="button" id="publishBand" type="button">Share your first lesson <span aria-hidden="true">→</span></button>
       </section>
 
@@ -468,7 +468,7 @@
         <div class="field"><label for="joinCountry">Country</label><select id="joinCountry" name="country" required><option value="" selected disabled>Choose your country</option></select></div>
         <div class="field"><label>Your role</label><div class="role-options">
           <label class="role-option role-card"><input type="radio" name="role" value="learner" checked><span><span class="role-icon" aria-hidden="true">📖</span><strong>Learner</strong><span>Find free and paid lessons.</span></span></label>
-          <label class="role-option role-card"><input type="radio" name="role" value="teacher"><span><span class="role-icon" aria-hidden="true">🤟</span><strong>Deaf signer / teacher</strong><span>Share lessons with learners.</span></span></label>
+          <label class="role-option role-card"><input type="radio" name="role" value="teacher"><span><span class="role-icon" aria-hidden="true">📚</span><strong>Tutor</strong><span>Share lessons with learners.</span></span></label>
         </div></div>
         <div class="field"><label class="role-option agreement-option"><input id="acceptSafetyPolicy" name="acceptSafetyPolicy" type="checkbox" required><span><strong>I am 18 or older and agree to the platform terms, community rules, and privacy policy.</strong><span>Harassment and abuse are prohibited.</span></span></label><span class="agreement-link"><button class="inline-link" type="button" data-open-terms>Read the full agreement</button> · <button class="inline-link" type="button" data-open-privacy>Privacy policy</button></span></div>
         <div class="field" id="teacherTaxAgreement" hidden><label class="role-option agreement-option"><input id="acceptTaxTerms" name="acceptTaxTerms" type="checkbox"><span><strong>I accept responsibility for my own tax and legal obligations.</strong><span>I will follow applicable local tax and business rules for lessons I offer.</span></span></label></div>
@@ -559,7 +559,7 @@
         <div class="field" id="videoUploadField"><label class="drop-zone" for="lessonVideo"><span><strong id="videoLabel">Choose a video to upload</strong><span>MP4, MOV, WebM, M4V, or 3GP · up to 50 MB</span></span><input id="lessonVideo" name="video" type="file" accept="video/*,.mp4,.mov,.m4v,.webm,.3gp"></label><small>Video too big? Record in 720p (iPhone: Settings → Camera → Record Video → 720p; Android: camera settings → video size → 720p), keep each lesson short, or use a YouTube link for longer free lessons.</small></div>
         <div class="field" id="videoLinkField" hidden><label for="lessonYoutube">YouTube link</label><input id="lessonYoutube" name="youtube" type="url" inputmode="url" placeholder="https://youtu.be/..."><small>Upload the video to YouTube as <strong>Unlisted</strong>, then paste its link here. YouTube links work for free lessons only, because anyone with the link can watch.</small></div>
         <div class="upload-progress" id="uploadProgress" hidden><div class="upload-bar"><span id="uploadBar"></span></div><p id="uploadText">Uploading… 0%</p></div>
-        <p class="form-notice">For accessible signing, keep your hands, face, and upper body clearly in frame.</p>
+        <p class="form-notice">Keep yourself and anything you show clearly in frame, with good light.</p>
         <div class="dialog-actions"><button class="button outline" type="button" data-close="publishBackdrop">Cancel</button><button class="button" type="submit">Publish lesson</button></div>
       </form>
     </section>
@@ -849,7 +849,7 @@
     // Public Jitsi server that lets anyone start a room without signing in (meet.jit.si requires a moderator login).
     const VIDEO_HOST = "meet.ffmuc.net";
     const CONTACT_EMAIL = "support@accessedsolution.com";
-    const REPORT_REASONS = { review_removal: "Review removal request", harassment: "Harassment or abuse", inappropriate: "Inappropriate content", fraud: "Scam or fraud", fake: "Fake profile", irrelevant: "Not a real sign language lesson", other: "Something else" };
+    const REPORT_REASONS = { review_removal: "Review removal request", harassment: "Harassment or abuse", inappropriate: "Inappropriate content", fraud: "Scam or fraud", fake: "Fake profile", irrelevant: "Not a real lesson", other: "Something else" };
     const PAYMENT_METHODS = { telebirr: "Telebirr", cbe_birr: "CBE Birr", mpesa: "M-Pesa", venmo: "Venmo", paypal: "PayPal", zelle: "Zelle", cashapp: "Cash App", mobile_money: "Mobile money", bank: "Bank transfer", cash: "Cash (in person)", other: "Other" };
     // Payment choices and examples that fit each country. Learner and tutor are always in the same country.
     const PAYMENT_SETUP = {
@@ -879,9 +879,9 @@
 
     const sampleLessons = [
       { id: "sample-elias", title: "Community phrases and conversation", description: "Sample tutor profile. Elias will set his price when publishing.", category: "Community", creator: "Elias", price: null, currency: "", access: "paid", duration: "Sample", coverPattern: "pattern-sage", coverMark: "↔", example: true },
-      { id: "sample-selam", title: "Free beginner sign language lesson", description: "Sample tutor profile. No lesson video is included in this demo.", category: "Learning basics", creator: "Selam", price: 0, duration: "Sample", coverPattern: "pattern-clay", coverMark: "S", example: true },
-      { id: "sample-hiwot", title: "Numbers and everyday signs", description: "Sample tutor profile. Hiwot will set her price when publishing.", category: "Everyday life", creator: "Hiwot", price: null, currency: "", access: "paid", duration: "Sample", coverPattern: "pattern-blue", coverMark: "1", example: true },
-      { id: "sample-ahmed", title: "First signs and greetings", description: "Sample tutor profile. No lesson video is included in this demo.", category: "Learning basics", creator: "Ahmed", price: 0, duration: "Sample", coverPattern: "pattern-gold", coverMark: "A", example: true },
+      { id: "sample-selam", title: "Free beginner English lesson", description: "Sample tutor profile. No lesson video is included in this demo.", category: "Learning basics", creator: "Selam", price: 0, duration: "Sample", coverPattern: "pattern-clay", coverMark: "S", example: true },
+      { id: "sample-hiwot", title: "Numbers and everyday maths", description: "Sample tutor profile. Hiwot will set her price when publishing.", category: "Everyday life", creator: "Hiwot", price: null, currency: "", access: "paid", duration: "Sample", coverPattern: "pattern-blue", coverMark: "1", example: true },
+      { id: "sample-ahmed", title: "First words and greetings", description: "Sample tutor profile. No lesson video is included in this demo.", category: "Learning basics", creator: "Ahmed", price: 0, duration: "Sample", coverPattern: "pattern-gold", coverMark: "A", example: true },
     ];
 
     let session = null;
@@ -1010,7 +1010,7 @@
       const showDashboard = Boolean(account && dashboardMode);
       const pill = document.getElementById("accountPill");
       pill.hidden = !account;
-      pill.textContent = account ? `${account.name} · ${account.role === "teacher" ? "Signer / teacher" : "Learner"}` : "";
+      pill.textContent = account ? `${account.name} · ${account.role === "teacher" ? "Tutor" : "Learner"}` : "";
       document.getElementById("joinButton").hidden = Boolean(account);
       document.getElementById("signOutButton").hidden = !account;
       document.querySelector(".top-nav").hidden = showDashboard;
@@ -1147,7 +1147,7 @@
 
     function dashboardMemberRows(list, emptyText) {
       if (!list.length) return `<div class="dashboard-empty">${emptyText}</div>`;
-      return list.map(member => `<div class="dashboard-row"><div class="dashboard-avatar" aria-hidden="true">${avatarHTML(member.id, member.name)}</div><div style="min-width:0;flex:1"><strong>${escapeHTML(member.name)}</strong>${ratingBadge(member.id, member.name)}<small>${member.role === "teacher" ? "Signer / teacher" : "Learner"}${member.city ? ` · ${escapeHTML(member.city)}` : ""}</small>${member.topics ? `<small>${escapeHTML(member.topics)}</small>` : ""}${member.bio ? `<small>${escapeHTML(member.bio)}</small>` : ""}</div>${account?.role === "learner" && member.role === "teacher" ? `<button class="button small" type="button" data-connect-tutor="${escapeHTML(member.id)}" data-connect-name="${escapeHTML(member.name)}">Connect</button>` : ""}</div>`).join("");
+      return list.map(member => `<div class="dashboard-row"><div class="dashboard-avatar" aria-hidden="true">${avatarHTML(member.id, member.name)}</div><div style="min-width:0;flex:1"><strong>${escapeHTML(member.name)}</strong>${ratingBadge(member.id, member.name)}<small>${member.role === "teacher" ? "Tutor" : "Learner"}${member.city ? ` · ${escapeHTML(member.city)}` : ""}</small>${member.topics ? `<small>${escapeHTML(member.topics)}</small>` : ""}${member.bio ? `<small>${escapeHTML(member.bio)}</small>` : ""}</div>${account?.role === "learner" && member.role === "teacher" ? `<button class="button small" type="button" data-connect-tutor="${escapeHTML(member.id)}" data-connect-name="${escapeHTML(member.name)}">Connect</button>` : ""}</div>`).join("");
     }
 
     function renderDashboard() {
@@ -1165,9 +1165,9 @@
       if (account.isAdmin) tabs.push({ id: "admin", label: "Admin" });
       if (!tabs.some(tab => tab.id === dashboardTab)) dashboardTab = "overview";
 
-      document.getElementById("dashboardRole").textContent = teacher ? "SIGNER / TEACHER SPACE" : "LEARNER SPACE";
+      document.getElementById("dashboardRole").textContent = teacher ? "TUTOR SPACE" : "LEARNER SPACE";
       document.getElementById("dashboardTitle").textContent = `Welcome, ${account.name}`;
-      document.getElementById("dashboardIntro").textContent = `${teacher ? "Manage your teaching profile and lessons." : "Keep your sign language learning in one place."} You are connected with tutors and learners in ${country}.`;
+      document.getElementById("dashboardIntro").textContent = `${teacher ? "Manage your teaching profile and lessons." : "Keep your learning in one place."} You are connected with tutors and learners in ${country}.`;
       document.getElementById("dashboardPublishButton").hidden = !teacher;
       document.getElementById("dashboardTabs").innerHTML = tabs.map(tab => `<button class="dashboard-tab" type="button" data-dashboard-tab="${tab.id}" aria-selected="${tab.id === dashboardTab}">${tab.label}</button>`).join("");
 
@@ -1261,7 +1261,7 @@
     }
 
     function recommendCards(items) {
-      return items.map(({ tutor, why }) => `<div class="recommend-card"><div class="dashboard-avatar" aria-hidden="true">${avatarHTML(tutor.id, tutor.name)}</div><div class="recommend-text"><strong>${escapeHTML(tutor.name)}</strong>${ratingSummary(tutor.id) ? `<small class="recommend-rating">★ ${ratingSummary(tutor.id).average.toFixed(1)} (${ratingSummary(tutor.id).count} reviews)</small>` : ""}<small>${escapeHTML([tutor.city, tutor.topics].filter(Boolean).join(" · ") || "Sign language tutor")}</small><span class="recommend-why">${escapeHTML(why)}</span></div><button class="button small" type="button" data-connect-tutor="${escapeHTML(tutor.id)}" data-connect-name="${escapeHTML(tutor.name)}">Connect</button></div>`).join("");
+      return items.map(({ tutor, why }) => `<div class="recommend-card"><div class="dashboard-avatar" aria-hidden="true">${avatarHTML(tutor.id, tutor.name)}</div><div class="recommend-text"><strong>${escapeHTML(tutor.name)}</strong>${ratingSummary(tutor.id) ? `<small class="recommend-rating">★ ${ratingSummary(tutor.id).average.toFixed(1)} (${ratingSummary(tutor.id).count} reviews)</small>` : ""}<small>${escapeHTML([tutor.city, tutor.topics].filter(Boolean).join(" · ") || "Tutor")}</small><span class="recommend-why">${escapeHTML(why)}</span></div><button class="button small" type="button" data-connect-tutor="${escapeHTML(tutor.id)}" data-connect-name="${escapeHTML(tutor.name)}">Connect</button></div>`).join("");
     }
 
     function dismissedAnnouncements() {
@@ -1342,8 +1342,8 @@
     // signedIn: the dashboard version adds payment-detail tips that are only for members.
     function howItWorksCard(role, signedIn = false) {
       if (role === "teacher") {
-        return `<div class="how-card"><h3><span aria-hidden="true">🤟</span> For signers and teachers</h3><ol>
-          <li><strong>Join</strong> as a Deaf signer / teacher and choose your country.</li>
+        return `<div class="how-card"><h3><span aria-hidden="true">📚</span> For tutors</h3><ol>
+          <li><strong>Join</strong> as a tutor and choose your country.</li>
           <li>Press <strong>+ Add a lesson</strong>. Give it a title, one sentence about what you teach, and a short video, or paste a YouTube link.</li>
           <li>Choose <strong>free</strong> or <strong>paid</strong>.${signedIn ? " For paid lessons, add how learners can pay you in your profile, or choose “Collect later”." : ""}</li>
           <li>Open <strong>Requests</strong> to accept learners. At lesson time press <strong>🎥 Start video lesson</strong>. After a learner pays you, press <strong>Mark as paid</strong>.</li>
@@ -1466,7 +1466,7 @@
       if (lesson.example) {
         player.innerHTML = videoPlaceholder("▣", "This is a sample tutor profile, not a real lesson. Join to see real tutors.");
       } else if (!lesson.videoPath && !lesson.youtubeId) {
-        player.innerHTML = videoPlaceholder("🤟", "This is a live lesson. Request a lesson below to choose a time with the tutor, online or in person.");
+        player.innerHTML = videoPlaceholder("📚", "This is a live lesson. Request a lesson below to choose a time with the tutor, online or in person.");
       } else if (!unlockedLesson) {
         player.innerHTML = videoPlaceholder("🔒", "This paid video unlocks after you request the lesson, pay your tutor, and your tutor confirms the payment.");
       } else {
@@ -1535,11 +1535,11 @@
         document.querySelector('#joinForm input[name="role"][value="teacher"]').checked = true;
         updateSignupAgreementFields();
         openDialog("joinBackdrop");
-        showToast("Join as a signer / teacher to share lessons.");
+        showToast("Join as a tutor to share lessons.");
         return;
       }
       if (account.role !== "teacher") {
-        showToast("Only signer / teacher accounts can share lessons.");
+        showToast("Only tutor accounts can share lessons.");
         return;
       }
       openDialog("publishBackdrop");
@@ -1783,7 +1783,7 @@
       const open = reports.filter(report => report.status === "open").length;
       const rows = reports.map(report => `<div class="dashboard-row"><div class="dashboard-avatar" aria-hidden="true">${report.status === "open" ? "!" : "✓"}</div><div style="min-width:0;flex:1">
           <strong>${escapeHTML(REPORT_REASONS[report.reason] || report.reason)} · ${escapeHTML(report.reported_name)}${report.reported_suspended ? " (suspended)" : ""}</strong>
-          <small>Reported: ${escapeHTML(report.reported_name)} · ${report.reported_role ? `${report.reported_role === "teacher" ? "Signer / teacher" : "Learner"} · ${escapeHTML(countryName(report.reported_country))}` : "Account deleted"}${report.reported_email ? ` · ${escapeHTML(report.reported_email)}` : ""}</small>
+          <small>Reported: ${escapeHTML(report.reported_name)} · ${report.reported_role ? `${report.reported_role === "teacher" ? "Tutor" : "Learner"} · ${escapeHTML(countryName(report.reported_country))}` : "Account deleted"}${report.reported_email ? ` · ${escapeHTML(report.reported_email)}` : ""}</small>
           <small>By: ${escapeHTML(report.reporter_name)} · ${escapeHTML(report.reporter_email)} · ${escapeHTML(formatDateTime(report.created_at))}</small>
           ${report.lesson_title ? `<small>Lesson: ${escapeHTML(report.lesson_title)}</small>` : ""}
           ${report.review_id ? `<small class="payment-note"><strong>${stars(report.review_rating)}</strong>${report.review_feedback ? `\n${escapeHTML(report.review_feedback)}` : ""}</small>` : report.reason === "review_removal" ? "<small>This review has already been deleted.</small>" : ""}
@@ -2488,7 +2488,7 @@
     document.getElementById("publishForm").addEventListener("submit", async event => {
       event.preventDefault();
       if (!requireDatabase()) return;
-      if (!account || account.role !== "teacher") { showToast("Sign in as a signer / teacher to publish lessons."); return; }
+      if (!account || account.role !== "teacher") { showToast("Sign in as a tutor to publish lessons."); return; }
       const form = event.currentTarget;
       const values = new FormData(form);
       const video = values.get("video");
@@ -2584,7 +2584,7 @@
        "Press Join at the top of the page.",
        "In the window that opens, press “New here? Join”.",
        "Enter your name, email address, and a password (at least 8 characters).",
-       "Choose your country and whether you are a learner or a Deaf signer / teacher.",
+       "Choose your country and whether you are a learner or a tutor.",
        "Confirm you are 18 or older, accept the rules, and press Join.",
        "Already have an account? Don't join again with the same email. Just sign in, or press “Forgot password?” if you can't remember your password."
       ],
@@ -2723,7 +2723,7 @@
        "book",
        "booking",
        "connect",
-       "learn sign language",
+       "learn something",
        "take a lesson",
        "get a tutor"
       ],
@@ -2752,11 +2752,11 @@
        "upload",
        "become a tutor",
        "become a teacher",
-       "teach sign language",
+       "teach something",
        "share my lessons"
       ],
       "steps": [
-       "Join as a Deaf signer / teacher and sign in.",
+       "Join as a tutor and sign in.",
        "Press + Add a lesson.",
        "Add a title and one sentence about what you teach.",
        "Upload a short video, paste a YouTube link, or choose No video for live lessons.",
