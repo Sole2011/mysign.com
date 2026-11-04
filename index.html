@@ -468,7 +468,7 @@
       <button class="nav-drop" id="exploreButton" type="button" aria-expanded="false" aria-controls="browsePanel">Explore lessons<span class="nav-chevron" aria-hidden="true">⌄</span></button>
       <button class="nav-drop" id="howButton" type="button" aria-expanded="false" aria-controls="howPanel">How it works<span class="nav-chevron" aria-hidden="true">⌄</span></button>
       <button class="nav-drop" id="teachButton" type="button" aria-expanded="false" aria-controls="teachPanel">For tutors<span class="nav-chevron" aria-hidden="true">⌄</span></button>
-      <button class="nav-drop" id="tutorButton" type="button" aria-expanded="false" aria-controls="tutorPanel">AI English tutor<span class="nav-chevron" aria-hidden="true">⌄</span></button>
+      <button class="nav-drop" id="tutorButton" type="button" aria-expanded="false" aria-controls="tutorPanel">Elias (AI tutor)<span class="nav-chevron" aria-hidden="true">⌄</span></button>
     </nav>
     <div class="top-actions">
       <label class="sr-only" for="languageSelect">Language</label>
@@ -526,7 +526,7 @@
         <input id="tutorInput" name="message" maxlength="300" autocomplete="off" placeholder="Write in English…">
         <button class="button small" type="submit">Send</button>
       </form>
-      <p class="tutor-note">This is an AI, so it can make mistakes. Do not share passwords, phone numbers or other private details. Your messages are sent to Google to make the answers.</p>
+      <p class="tutor-note">This is an AI, so it can make mistakes. Do not share passwords, phone numbers or other private details.</p>
     </div>
     <div class="browse-menu teach-menu" id="teachPanel" role="region" aria-label="For tutors" hidden>
       <section class="creator-band" id="teach" aria-labelledby="creatorTitle">
@@ -815,7 +815,7 @@
         <p><strong>Why we use it.</strong> To create your account, show you tutors and learners in your country, let you request, accept, and hold lessons, send account emails (like confirming your email or resetting your password), and keep the community safe.</p>
         <p><strong>Who can see what.</strong> Members in your country can see your name, profile picture, role, city, topics, and bio. Your email address is shared only with the other person in a lesson request (a teacher sees the learner's email; a learner sees the teacher's email after the teacher accepts). Teacher payment details are shown only to learners whose request the teacher accepted. Members in other countries cannot see you. Reports are seen only by My Sign administrators.</p>
         <p><strong>Services we use.</strong> Supabase stores accounts, lessons, and videos. Resend sends our emails. Video lessons happen on Jitsi Meet at meet.ffmuc.net, a free service run by Freifunk München in Germany, which has its own privacy policy. The website is hosted on GitHub Pages and loads fonts from Google Fonts. These providers may store or process data outside Ethiopia, including in Europe and the United States.</p>
-        <p><strong>AI helpers.</strong> Hana (the help chat) and the AI English tutor use Google's Gemini service to write their answers. When you use them, the messages you type in that chat are sent to Google. We do not keep these chats in your My Sign account. Because we use Google's free service, Google may store these messages and may use them to improve its products, and people at Google may read some of them. Do not write passwords, phone numbers, addresses, or other private details in these chats. AI answers can be wrong.</p>
+        <p><strong>AI helpers.</strong> Hana (the help chat) and Elias, the AI English tutor, use Google's Gemini service to write their answers. When you use them, the messages you type in that chat are sent to Google. We do not keep these chats in your My Sign account. Because we use Google's free service, Google may store these messages and may use them to improve its products, and people at Google may read some of them. Do not write passwords, phone numbers, addresses, or other private details in these chats. AI answers can be wrong.</p>
         <p><strong>Payments.</strong> My Sign does not handle payments. Learners pay teachers directly.</p>
         <p><strong>How long we keep it.</strong> We keep your information while your account is open. When you delete your account, we delete your profile, lessons, videos, and requests, except where we must keep something to handle a safety report or meet a legal obligation.</p>
         <p><strong>Your choices and rights.</strong> You can see and edit your profile at any time in your dashboard, and delete your account yourself under My profile → Delete account. You can also ask us for a copy of your information, to correct it, or to delete your account by emailing <a href="mailto:support@accessedsolution.com">support@accessedsolution.com</a>.</p>
@@ -3400,7 +3400,7 @@
        "elias"
       ],
       "steps": [
-       "Press “AI English tutor” in the menu at the top of the page.",
+       "Press “Elias (AI tutor)” in the menu at the top of the page.",
        "Choose your level: Beginner, Intermediate, or Advanced.",
        "Elias, your AI tutor, says hello. Write to him in English. He answers, fixes your mistakes kindly, and asks you a question. You can also listen to his voice.",
        "It is free. Elias is an AI, so he can make mistakes. Do not share passwords or private details."
@@ -3555,7 +3555,7 @@
         { target: "#lessonGrid", before: () => setBrowseOpen(true), title: "Lessons from tutors", text: "Each card is a lesson from a tutor. Open one to read about it and request a lesson." },
         { target: "#languageSelect", title: "Your language", text: "Press here to change the language of the website." },
         { target: "#howPanel", before: () => setHowOpen(true), title: "How it works", text: "Press How it works at the top to see these steps for learners and tutors." },
-        { target: "#tutorPanel", before: () => setMenu("tutor", true), title: "Free AI English tutor", text: "Press AI English tutor at the top to practise English with a friendly AI. It fixes your mistakes and asks you questions." },
+        { target: "#tutorPanel", before: () => setMenu("tutor", true), title: "Free AI English tutor", text: "Press Elias (AI tutor) at the top to practise English with a friendly AI. It fixes your mistakes and asks you questions." },
         { target: "#teach", before: () => setTeachOpen(true), title: "Are you a tutor?", text: "Press For tutors at the top. Tutors can share free or paid lessons." },
         { target: "#joinButton", title: "Join My Sign", text: "To request lessons or share lessons, you need an account. Press Join at the top of the page.", extra: [["Help me join", "guide-join"]] },
         { target: "#dashboardTabs", title: "Your account", text: "These tabs open the different parts of your account, like your requests, your community and your profile." }
