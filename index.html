@@ -2972,14 +2972,22 @@
       "id": "support",
       "title": "Contact a person",
       "keywords": [
-       "contact",
-       "support",
+       "contact support",
+       "contact a person",
+       "contact someone",
+       "contact you",
+       "contact us",
+       "customer support",
+       "support team",
        "human",
-       "person",
+       "real person",
        "admin",
        "talk to someone",
-       "help me",
-       "problem"
+       "speak to someone",
+       "talk to a person",
+       "speak to a person",
+       "email you",
+       "your email"
       ],
       "steps": [
        "Write to support@accessedsolution.com.",
@@ -3056,9 +3064,7 @@
       const fallback = document.createElement("div");
       const text = document.createElement("p");
       text.textContent = "I'm not sure I understood. Here are some topics I can help with:";
-      const help = document.createElement("p");
-      help.textContent = "Still need help? Write to support@accessedsolution.com.";
-      fallback.append(text, ameleworkChips(AMELEWORK_TOPICS), help);
+      fallback.append(text, ameleworkChips(AMELEWORK_TOPICS));
       ameleworkAdd("bot", fallback);
     }
 
