@@ -100,24 +100,36 @@
     .button.gold:hover { background: #c3982c; }
     .button.small { min-height: 34px; padding: 0 12px; font-size: 11px; }
 
-    .hero { position: relative; isolation: isolate; overflow: hidden; margin: 28px 0 17px; padding: 52px 52px 46px; border-radius: 26px; background: linear-gradient(120deg, #e4f0e8 0%, #eef3df 52%, #f8ecc9 100%); box-shadow: inset 0 0 0 1px rgb(23 97 75 / 10%); }
-    .hero::before { content: ""; position: absolute; z-index: -1; inset: 0; background-image: radial-gradient(rgb(23 97 75 / 14%) 1.4px, transparent 1.6px); background-size: 22px 22px; -webkit-mask-image: linear-gradient(90deg, transparent 35%, #000 100%); mask-image: linear-gradient(90deg, transparent 35%, #000 100%); }
-    .hero-copy { position: relative; max-width: 760px; }
-    .hero-art { position: absolute; z-index: -1; inset-block: 0; inset-inline-end: 0; width: min(46%, 520px); pointer-events: none; }
+    #top { display: flex; flex-direction: column; min-height: calc(100vh - 73px); }
+    .hero { position: relative; isolation: isolate; overflow: hidden; display: flex; flex: 1; align-items: center; margin: 28px 0 17px; padding: 56px 60px; border-radius: 26px; background: linear-gradient(120deg, #e4f0e8 0%, #eef3df 52%, #f8ecc9 100%); box-shadow: inset 0 0 0 1px rgb(23 97 75 / 10%); }
+    .hero::before { content: ""; position: absolute; z-index: -1; inset: 0; background-image: radial-gradient(rgb(23 97 75 / 14%) 1.4px, transparent 1.6px); background-size: 22px 22px; -webkit-mask-image: linear-gradient(90deg, transparent 8%, #000 70%); mask-image: linear-gradient(90deg, transparent 8%, #000 70%); }
+    .hero::after { content: ""; position: absolute; z-index: -1; width: 520px; height: 520px; inset-inline-start: -170px; bottom: -280px; border-radius: 50%; background: radial-gradient(circle, rgb(23 97 75 / 16%), rgb(23 97 75 / 0%) 68%); }
+    .hero-copy { position: relative; width: 100%; max-width: min(780px, 56%); }
+    .hero-art { --art: min(420px, 58vh); position: absolute; z-index: -1; inset-block: 0; inset-inline-end: 0; width: min(54%, 700px); pointer-events: none; }
     .hero-art .blob { position: absolute; border-radius: 50%; }
-    .hero-art .blob.big { width: 330px; height: 330px; inset-inline-end: 70px; top: 50%; translate: 0 -50%; background: radial-gradient(circle at 32% 28%, #2d8268, var(--green) 62%, var(--green-dark)); box-shadow: 0 24px 60px rgb(23 97 75 / 30%); }
-    .hero-art .blob.big::after { content: "🎓"; position: absolute; inset: 0; display: grid; place-items: center; font-size: 110px; filter: drop-shadow(0 8px 10px rgb(0 0 0 / 25%)); }
-    .hero-art .blob.ring { width: 410px; height: 410px; inset-inline-end: 30px; top: 50%; translate: 0 -50%; border: 2px dashed rgb(23 97 75 / 28%); }
-    .hero-art .blob.gold { width: 92px; height: 92px; inset-inline-end: 12px; top: 26px; background: var(--gold); opacity: .85; }
-    .hero-art .blob.soft { width: 140px; height: 140px; inset-inline-end: 310px; bottom: -48px; background: rgb(226 184 80 / 35%); }
-    .hero-art .chip { position: absolute; display: grid; width: 62px; height: 62px; place-items: center; border-radius: 18px; background: #fff; box-shadow: 0 12px 28px rgb(17 45 35 / 18%); font-size: 30px; animation: hero-float 5s ease-in-out infinite; }
-    .hero-art .chip.a { inset-inline-end: 330px; top: 52px; rotate: -8deg; }
-    .hero-art .chip.b { inset-inline-end: 18px; top: 52%; rotate: 8deg; animation-delay: -1.5s; }
-    .hero-art .chip.c { inset-inline-end: 300px; bottom: 44px; rotate: 6deg; animation-delay: -3s; }
-    .hero-art .chip.d { inset-inline-end: 110px; bottom: 30px; rotate: -6deg; animation-delay: -2s; }
+    .hero-art .blob.big { width: var(--art); height: var(--art); inset-inline-end: 90px; top: 50%; translate: 0 -50%; background: radial-gradient(circle at 32% 28%, #2d8268, var(--green) 62%, var(--green-dark)); box-shadow: 0 24px 60px rgb(23 97 75 / 30%); }
+    .hero-art .blob.big::after { content: "🎓"; position: absolute; inset: 0; display: grid; place-items: center; font-size: calc(var(--art) * .33); filter: drop-shadow(0 8px 10px rgb(0 0 0 / 25%)); }
+    .hero-art .blob.ring { width: calc(var(--art) * 1.26); height: calc(var(--art) * 1.26); inset-inline-end: calc(90px - var(--art) * .13); top: 50%; translate: 0 -50%; border: 2px dashed rgb(23 97 75 / 28%); }
+    .hero-art .blob.ring2 { width: calc(var(--art) * 1.55); height: calc(var(--art) * 1.55); inset-inline-end: calc(90px - var(--art) * .275); top: 50%; translate: 0 -50%; border: 2px solid rgb(23 97 75 / 8%); }
+    .hero-art .blob.gold { width: calc(var(--art) * .28); height: calc(var(--art) * .28); inset-inline-end: 24px; top: calc(50% - var(--art) * .66); background: var(--gold); opacity: .85; }
+    .hero-art .blob.soft { width: calc(var(--art) * .42); height: calc(var(--art) * .42); inset-inline-end: calc(90px + var(--art) * .78); top: calc(50% + var(--art) * .42); background: rgb(226 184 80 / 35%); }
+    .hero-art .blob.dot1 { width: 18px; height: 18px; inset-inline-end: calc(90px + var(--art) * 1.12); top: calc(50% - var(--art) * .1); background: var(--green); opacity: .55; }
+    .hero-art .blob.dot2 { width: 12px; height: 12px; inset-inline-end: 40px; top: calc(50% + var(--art) * .6); background: var(--gold); }
+    .hero-art .blob.dot3 { width: 26px; height: 26px; inset-inline-end: calc(90px + var(--art) * .45); top: calc(50% - var(--art) * .74); background: rgb(23 97 75 / 22%); }
+    .hero-art .chip { position: absolute; display: grid; width: calc(var(--art) * .17); height: calc(var(--art) * .17); min-width: 52px; min-height: 52px; place-items: center; border-radius: 18px; background: #fff; box-shadow: 0 12px 28px rgb(17 45 35 / 18%); font-size: calc(var(--art) * .08); animation: hero-float 5s ease-in-out infinite; }
+    .hero-art .chip.a { inset-inline-end: calc(90px + var(--art) * .92); top: calc(50% - var(--art) * .42); rotate: -8deg; }
+    .hero-art .chip.b { inset-inline-end: calc(90px - var(--art) * .07); top: calc(50% - var(--art) * .05); rotate: 8deg; animation-delay: -1.5s; }
+    .hero-art .chip.c { inset-inline-end: calc(90px + var(--art) * .8); top: calc(50% + var(--art) * .3); rotate: 6deg; animation-delay: -3s; }
+    .hero-art .chip.d { inset-inline-end: calc(90px + var(--art) * .2); top: calc(50% + var(--art) * .5); rotate: -6deg; animation-delay: -2s; }
     @keyframes hero-float { 50% { translate: 0 -10px; } }
-    @media (min-width: 1001px) { .hero-copy { max-width: min(760px, 62%); } }
-    @media (max-width: 1000px) { .hero-art { display: none; } .hero::before { -webkit-mask-image: none; mask-image: none; opacity: .5; } }
+    @media (max-width: 1000px) {
+      .hero { align-items: flex-start; }
+      .hero-copy { max-width: 100%; }
+      .hero-art { --art: min(230px, 30vh); inset-block: auto 0; inset-inline: 0; width: 100%; height: 42%; opacity: .95; }
+      .hero-art .blob.big, .hero-art .blob.ring, .hero-art .blob.ring2 { inset-inline-end: auto; inset-inline-start: 50%; translate: -50% -50%; }
+      .hero-art .chip, .hero-art .blob.soft, .hero-art .blob.dot1, .hero-art .blob.dot3 { display: none; }
+      .hero::before { -webkit-mask-image: none; mask-image: none; opacity: .5; }
+    }
     .overline { display: inline-block; margin: 0 0 12px; padding: 6px 12px; border-radius: 99px; background: rgb(255 255 255 / 75%); color: var(--green); font-size: 10px; font-weight: 700; letter-spacing: 1px; }
     h1 { max-width: 650px; margin: 0 0 9px; font-size: 36px; font-weight: 700; line-height: 1.15; }
     .hero-copy > p:not(.overline) { max-width: 620px; margin: 0 0 18px; color: var(--muted); font-size: 13px; line-height: 1.65; }
@@ -125,6 +137,10 @@
     .hero-search .search-wrap { flex: 1; }
     .hero-search .search-input { width: 100%; height: 46px; font-size: 13px; box-shadow: 0 8px 22px rgb(17 45 35 / 10%); }
     .hero-search .button { min-height: 46px; padding-inline: 20px; }
+    .hero h1 { max-width: 760px; font-size: clamp(30px, 4vw, 58px); line-height: 1.1; }
+    .hero .hero-copy > p:not(.overline) { max-width: 640px; margin-bottom: 26px; font-size: clamp(14px, 1.25vw, 17px); }
+    .hero-search .search-input, .hero-search .button { height: 54px; min-height: 54px; }
+    .hero-search { max-width: 720px; }
     .hero-link { margin-top: 14px; padding: 0; border: 0; background: transparent; color: var(--green); font-size: 11px; font-weight: 700; cursor: pointer; }
 
     .browse-menu .section-kicker { margin-bottom: 5px; }
@@ -381,6 +397,7 @@
       .shell { padding-inline: 16px; }
       .topbar { height: 62px; }
       .brand { font-size: 15px; }
+      #top { min-height: calc(100vh - 100px); }
       .topbar { height: auto; flex-wrap: wrap; row-gap: 4px; padding-block: 9px 6px; }
       .top-nav { order: 3; display: flex; width: 100%; justify-content: space-between; gap: 4px; }
       .top-nav .nav-drop { padding: 7px 8px; font-size: 11.5px; }
@@ -476,7 +493,7 @@
     <div class="shell" id="top">
       <section class="hero public-only" aria-labelledby="heroTitle">
         <div class="hero-art" aria-hidden="true">
-          <span class="blob ring"></span><span class="blob soft"></span><span class="blob gold"></span><span class="blob big"></span>
+          <span class="blob ring2"></span><span class="blob ring"></span><span class="blob soft"></span><span class="blob gold"></span><span class="blob dot1"></span><span class="blob dot2"></span><span class="blob dot3"></span><span class="blob big"></span>
           <span class="chip a">📖</span><span class="chip b">⭐</span><span class="chip c">✏️</span><span class="chip d">💬</span>
         </div>
         <div class="hero-copy">
