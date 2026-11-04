@@ -75,12 +75,41 @@
     .elias-avatar { display: inline-grid; width: 36px; height: 36px; flex: 0 0 auto; border-radius: 50%; overflow: hidden; background: #f3d58a; box-shadow: 0 0 0 2px #fff, 0 3px 10px rgb(17 45 35 / 18%); }
     .elias-avatar.big { width: 76px; height: 76px; box-shadow: 0 0 0 3px #fff, 0 8px 22px rgb(17 45 35 / 22%); }
     .elias-avatar svg { width: 100%; height: 100%; }
+    .elias-avatar.huge { width: 170px; height: 170px; box-shadow: 0 0 0 4px #fff, 0 14px 34px rgb(17 45 35 / 26%); }
     .elias-avatar .mouth { opacity: 0; transform-box: fill-box; transform-origin: center; }
+    .elias-avatar .eye, .elias-avatar .pupil { transform-box: fill-box; transform-origin: center; }
+    .elias-avatar .eye { animation: elias-blink 4.6s infinite; }
+    .elias-avatar .head { transform-origin: 32px 50px; }
     .elias-avatar.speaking .smile { opacity: 0; }
-    .elias-avatar.speaking .mouth { opacity: 1; animation: elias-talk .26s ease-in-out infinite alternate; }
+    .elias-avatar.speaking .mouth { opacity: 1; animation: elias-talk .55s ease-in-out infinite; }
+    .elias-avatar.speaking .pupil { animation: elias-gaze 2.4s ease-in-out infinite; }
+    .elias-avatar.speaking .eye { animation: elias-blink 2.6s infinite; }
+    .elias-avatar.speaking .brows { animation: elias-brows 1.3s ease-in-out infinite; }
+    .elias-avatar.speaking .head { animation: elias-nod 1.5s ease-in-out infinite; }
     .elias-avatar.speaking { animation: elias-glow 1.1s ease-in-out infinite; }
-    @keyframes elias-talk { from { transform: scaleY(.5); } to { transform: scaleY(3); } }
-    @keyframes elias-glow { 50% { box-shadow: 0 0 0 4px rgb(23 97 75 / 35%), 0 8px 22px rgb(17 45 35 / 22%); } }
+    .elias-avatar.thinking .pupil { animation: elias-think 2.2s ease-in-out infinite; }
+    @keyframes elias-blink { 0%, 92%, 100% { transform: scaleY(1); } 95.500% { transform: scaleY(.08); } }
+    @keyframes elias-talk { 0%, 100% { transform: scale(1, .4); } 18% { transform: scale(1.15, 2.600); } 36% { transform: scale(.8, 1); } 54% { transform: scale(1.1, 3.200); } 72% { transform: scale(.9, 1.400); } }
+    @keyframes elias-gaze { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(-.9px, .2px); } 50% { transform: translate(.2px, -.5px); } 75% { transform: translate(.9px, .2px); } }
+    @keyframes elias-think { 0%, 100% { transform: translate(-.8px, -1px); } 50% { transform: translate(.8px, -1px); } }
+    @keyframes elias-brows { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-.9px); } 70% { transform: translateY(-.3px); } }
+    @keyframes elias-nod { 0%, 100% { transform: rotate(0) translateY(0); } 30% { transform: rotate(1.600deg) translateY(.5px); } 65% { transform: rotate(-1.400deg) translateY(-.3px); } }
+    @keyframes elias-glow { 50% { box-shadow: 0 0 0 5px rgb(23 97 75 / 35%), 0 8px 22px rgb(17 45 35 / 22%); } }
+    .tutor-mic { min-width: 42px; font-size: 16px; }
+    .tutor-mic.listening { border-color: var(--red); background: var(--red); color: #fff; animation: mic-pulse 1.1s ease-in-out infinite; }
+    @keyframes mic-pulse { 50% { box-shadow: 0 0 0 6px rgb(202 99 79 / 28%); } }
+    .tutor-sentence { margin: 8px 0; padding: 10px 12px; border-radius: 10px; background: #f2f8f4; color: var(--green-dark); font-size: 17px; font-weight: 700; line-height: 1.4; }
+    .tutor-word { border-color: #e7b9ae; background: #fbefeb; color: #8f3f2e; }
+    .amelework-message .tutor-word small { display: inline; margin: 0 0 0 4px; font-size: 11px; font-weight: 400; letter-spacing: 0; text-transform: none; color: #8f3f2e; }
+    .elias-avatar.listening .head { animation: elias-listen 2.4s ease-in-out infinite; }
+    .elias-avatar.listening .brows { transform: translateY(-.9px); }
+    @keyframes elias-listen { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(2.500deg); } }
+    .tutor-stage { display: none; flex-direction: column; align-items: center; gap: 8px; padding: 22px 14px 18px; border-radius: 18px; background: linear-gradient(160deg, #e4f0e8, #f8ecc9); text-align: center; }
+    .tutor-stage strong { font-family: "DM Serif Display", Georgia, serif; font-size: 24px; font-weight: 400; }
+    .tutor-status { color: var(--muted); font-size: 12px; }
+    .tutor-menu.voice-on .tutor-body { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 20px; align-items: start; }
+    .tutor-menu.voice-on .tutor-stage { display: flex; }
+    .tutor-menu.voice-on .tutor-id .elias-avatar.big { display: none; }
     .tutor-row { display: flex; align-items: flex-end; gap: 8px; justify-self: start; max-width: 94%; }
     .tutor-row .amelework-message { max-width: none; }
     .tutor-listen { display: block; margin: 8px 0 0; padding: 4px 10px; border: 1px solid #bcd6c5; border-radius: 99px; background: #f2f8f4; color: var(--green); font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; }
@@ -428,6 +457,10 @@
       .top-nav { flex-wrap: wrap; justify-content: center; }
       .top-nav .nav-drop { padding: 6px 7px; font-size: 11px; }
       .tutor-head { flex-direction: column; align-items: start; }
+      .tutor-menu.voice-on .tutor-body { grid-template-columns: 1fr; gap: 12px; }
+      .tutor-stage { flex-direction: row !important; justify-content: flex-start; gap: 14px; padding: 12px 14px; text-align: start; }
+      .elias-avatar.huge { width: 84px; height: 84px; }
+      .tutor-stage strong { font-size: 20px; }
       .top-actions { gap: 5px; }
       .top-actions .button { min-height: 34px; padding-inline: 9px; font-size: 10px; }
       .account-pill { max-width: 94px; overflow: hidden; padding-inline: 6px; font-size: 9px; }
@@ -512,7 +545,7 @@
     <div class="browse-menu tutor-menu" id="tutorPanel" role="region" aria-label="Free AI English tutor" data-no-translate hidden>
       <button class="icon-close browse-menu-close" id="tutorClose" type="button" aria-label="Close">×</button>
       <div class="tutor-head">
-        <div class="tutor-id"><span class="elias-avatar big" id="eliasHeadAvatar" aria-hidden="true"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="32" fill="#f3d58a"/><path d="M8 64c2-14 12-20 24-20s22 6 24 20z" fill="#17614b"/><path d="M27 44h10v7c0 3-2.4 5-5 5s-5-2-5-5z" fill="#9a6a45"/><ellipse cx="32" cy="29" rx="13" ry="15" fill="#b57a50"/><path d="M18.5 27c-2-13 7-18 13.5-18s15.500 5 13.500 18c-2-6-6-9.500-13.500-9.500S20.500 21 18.500 27z" fill="#2b1d16"/><path d="M24 25q2.500-2 5-1M35 24q2.500-1 5 1" stroke="#2b1d16" stroke-width="1.500" fill="none" stroke-linecap="round"/><circle cx="26.500" cy="29" r="1.900" fill="#2b1d16"/><circle cx="37.500" cy="29" r="1.900" fill="#2b1d16"/><path class="smile" d="M26.500 36q5.500 4.500 11 0" stroke="#5e2424" stroke-width="1.800" fill="none" stroke-linecap="round"/><ellipse class="mouth" cx="32" cy="37" rx="4.500" ry="1.500" fill="#5e2424"/></svg></span><div><p class="section-kicker">FREE AI ENGLISH TUTOR</p><h2>Hello, I am Elias</h2><p class="section-intro">Write in English. I answer, fix your mistakes kindly, and ask you a question.</p></div></div>
+        <div class="tutor-id"><span class="elias-avatar big" id="eliasHeadAvatar" aria-hidden="true"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="32" fill="#f3d58a"/><path d="M6 64c2-14 12-19 26-19s24 5 26 19z" fill="#17614b"/><path d="M25 45l7 8 7-8" fill="#fff" stroke="#fff" stroke-width="1.200" stroke-linejoin="round"/><path d="M27 43h10v6c0 3-2.400 5-5 5s-5-2-5-5z" fill="#9a6a45"/><g class="head"><ellipse cx="18.800" cy="30" rx="2.200" ry="3.400" fill="#a86f48"/><ellipse cx="45.200" cy="30" rx="2.200" ry="3.400" fill="#a86f48"/><ellipse cx="32" cy="29" rx="13" ry="15" fill="#b57a50"/><path d="M18.500 27c-2-13 7-18 13.500-18s15.500 5 13.500 18c-2-6-6-9.500-13.500-9.500S20.500 21 18.500 27z" fill="#2b1d16"/><g class="brows" stroke="#2b1d16" stroke-width="1.500" fill="none" stroke-linecap="round"><path d="M23.500 24.500q3-2.200 6-.8"/><path d="M34.500 23.700q3-1.400 6 .8"/></g><g class="eye"><ellipse cx="26.500" cy="29" rx="3.100" ry="2.500" fill="#fff"/><g class="pupil"><circle cx="26.500" cy="29" r="1.700" fill="#2b1d16"/><circle cx="27.100" cy="28.400" r=".55" fill="#fff"/></g></g><g class="eye"><ellipse cx="37.500" cy="29" rx="3.100" ry="2.500" fill="#fff"/><g class="pupil"><circle cx="37.500" cy="29" r="1.700" fill="#2b1d16"/><circle cx="38.100" cy="28.400" r=".55" fill="#fff"/></g></g><path d="M32 30.500q-1.800 4.200 .2 4.800" stroke="#8c5a38" stroke-width="1.100" fill="none" stroke-linecap="round"/><path class="smile" d="M26.500 38q5.500 4.500 11 0" stroke="#5e2424" stroke-width="1.800" fill="none" stroke-linecap="round"/><ellipse class="mouth" cx="32" cy="39" rx="4.500" ry="1.500" fill="#5e2424"/></g></svg></span><div><p class="section-kicker">FREE AI ENGLISH TUTOR</p><h2>Hello, I am Elias</h2><p class="section-intro">Write in English. I answer, fix your mistakes kindly, and ask you a question.</p></div></div>
         <div class="tutor-tools">
           <label class="sr-only" for="tutorLevel">Your English level</label>
           <select class="sort-select" id="tutorLevel"><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select>
@@ -520,13 +553,23 @@
           <button class="button outline small" id="tutorRestart" type="button">Start over</button>
         </div>
       </div>
+      <div class="tutor-body">
+        <div class="tutor-stage" id="tutorStage">
+          <span class="elias-avatar huge" id="eliasStageAvatar" aria-hidden="true"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="32" fill="#f3d58a"/><path d="M6 64c2-14 12-19 26-19s24 5 26 19z" fill="#17614b"/><path d="M25 45l7 8 7-8" fill="#fff" stroke="#fff" stroke-width="1.200" stroke-linejoin="round"/><path d="M27 43h10v6c0 3-2.400 5-5 5s-5-2-5-5z" fill="#9a6a45"/><g class="head"><ellipse cx="18.800" cy="30" rx="2.200" ry="3.400" fill="#a86f48"/><ellipse cx="45.200" cy="30" rx="2.200" ry="3.400" fill="#a86f48"/><ellipse cx="32" cy="29" rx="13" ry="15" fill="#b57a50"/><path d="M18.500 27c-2-13 7-18 13.500-18s15.500 5 13.500 18c-2-6-6-9.500-13.500-9.500S20.500 21 18.500 27z" fill="#2b1d16"/><g class="brows" stroke="#2b1d16" stroke-width="1.500" fill="none" stroke-linecap="round"><path d="M23.500 24.500q3-2.200 6-.8"/><path d="M34.500 23.700q3-1.400 6 .8"/></g><g class="eye"><ellipse cx="26.500" cy="29" rx="3.100" ry="2.500" fill="#fff"/><g class="pupil"><circle cx="26.500" cy="29" r="1.700" fill="#2b1d16"/><circle cx="27.100" cy="28.400" r=".55" fill="#fff"/></g></g><g class="eye"><ellipse cx="37.500" cy="29" rx="3.100" ry="2.500" fill="#fff"/><g class="pupil"><circle cx="37.500" cy="29" r="1.700" fill="#2b1d16"/><circle cx="38.100" cy="28.400" r=".55" fill="#fff"/></g></g><path d="M32 30.500q-1.800 4.200 .2 4.800" stroke="#8c5a38" stroke-width="1.100" fill="none" stroke-linecap="round"/><path class="smile" d="M26.500 38q5.500 4.500 11 0" stroke="#5e2424" stroke-width="1.800" fill="none" stroke-linecap="round"/><ellipse class="mouth" cx="32" cy="39" rx="4.500" ry="1.500" fill="#5e2424"/></g></svg></span>
+          <strong>Elias</strong>
+          <span class="tutor-status" id="tutorStatus" aria-live="polite">Write to me in English</span>
+        </div>
+        <div class="tutor-chat">
       <div class="amelework-messages tutor-messages" id="tutorMessages" aria-live="polite"></div>
       <form class="amelework-form tutor-form" id="tutorForm">
         <label class="sr-only" for="tutorInput">Your message in English</label>
         <input id="tutorInput" name="message" maxlength="300" autocomplete="off" placeholder="Write in English…">
+        <button class="button outline small tutor-mic" id="tutorMic" type="button" aria-pressed="false" aria-label="Speak to Elias" title="Speak to Elias">🎤</button>
         <button class="button small" type="submit">Send</button>
       </form>
       <p class="tutor-note">This is an AI, so it can make mistakes. Do not share passwords, phone numbers or other private details.</p>
+        </div>
+      </div>
     </div>
     <div class="browse-menu teach-menu" id="teachPanel" role="region" aria-label="For tutors" hidden>
       <section class="creator-band" id="teach" aria-labelledby="creatorTitle">
@@ -815,7 +858,7 @@
         <p><strong>Why we use it.</strong> To create your account, show you tutors and learners in your country, let you request, accept, and hold lessons, send account emails (like confirming your email or resetting your password), and keep the community safe.</p>
         <p><strong>Who can see what.</strong> Members in your country can see your name, profile picture, role, city, topics, and bio. Your email address is shared only with the other person in a lesson request (a teacher sees the learner's email; a learner sees the teacher's email after the teacher accepts). Teacher payment details are shown only to learners whose request the teacher accepted. Members in other countries cannot see you. Reports are seen only by My Sign administrators.</p>
         <p><strong>Services we use.</strong> Supabase stores accounts, lessons, and videos. Resend sends our emails. Video lessons happen on Jitsi Meet at meet.ffmuc.net, a free service run by Freifunk München in Germany, which has its own privacy policy. The website is hosted on GitHub Pages and loads fonts from Google Fonts. These providers may store or process data outside Ethiopia, including in Europe and the United States.</p>
-        <p><strong>AI helpers.</strong> Hana (the help chat) and Elias, the AI English tutor, use Google's Gemini service to write their answers. When you use them, the messages you type in that chat are sent to Google. We do not keep these chats in your My Sign account. Because we use Google's free service, Google may store these messages and may use them to improve its products, and people at Google may read some of them. Do not write passwords, phone numbers, addresses, or other private details in these chats. AI answers can be wrong.</p>
+        <p><strong>AI helpers.</strong> Hana (the help chat) and Elias, the AI English tutor, use Google's Gemini service to write their answers. When you use them, the messages you type in that chat are sent to Google. We do not keep these chats in your My Sign account. Because we use Google's free service, Google may store these messages and may use them to improve its products, and people at Google may read some of them. If you use the microphone with Elias, your browser may send your voice to its own speech service to turn it into text (for example Google in Chrome, or Apple in Safari). My Sign does not record or keep your voice. Do not write or say passwords, phone numbers, addresses, or other private details in these chats. AI answers can be wrong.</p>
         <p><strong>Payments.</strong> My Sign does not handle payments. Learners pay teachers directly.</p>
         <p><strong>How long we keep it.</strong> We keep your information while your account is open. When you delete your account, we delete your profile, lessons, videos, and requests, except where we must keep something to handle a safety report or meet a legal obligation.</p>
         <p><strong>Your choices and rights.</strong> You can see and edit your profile at any time in your dashboard, and delete your account yourself under My profile → Delete account. You can also ask us for a copy of your information, to correct it, or to delete your account by emailing <a href="mailto:support@accessedsolution.com">support@accessedsolution.com</a>.</p>
@@ -1904,6 +1947,7 @@
     const ELIAS_FACE = document.getElementById("eliasHeadAvatar").innerHTML;
     let tutorVoiceOn = localStorage.getItem("my-sign-tutor-voice") !== "off";
     var tutorSpeakId = 0;
+    var tutorListening = null;
 
     // Elias's messages come with his face next to them; yours do not.
     function tutorAdd(role, text) {
@@ -1931,6 +1975,7 @@
     // Elias "speaks": his mouth moves while the voice reads the answer (or for a few seconds if the voice is off).
     function tutorStopSpeaking() {
       tutorSpeakId += 1;
+      if (typeof tutorListening !== "undefined" && tutorListening) tutorListening.abort();
       if (window.speechSynthesis) speechSynthesis.cancel();
       document.querySelectorAll(".elias-avatar.speaking").forEach(face => face.classList.remove("speaking"));
     }
@@ -1940,21 +1985,35 @@
       return english.find(voice => /daniel|alex|fred|aaron|arthur|david|james|guy|ryan|mark|male/i.test(voice.name)) || english.find(voice => /^en-(us|gb)/i.test(voice.lang)) || english[0] || null;
     }
 
-    function tutorSpeak(text, bubble, force = false) {
+    function tutorSpeak(text, bubble, force = false, rate = 0) {
       tutorStopSpeaking();
       const id = tutorSpeakId;
-      const faces = [document.getElementById("eliasHeadAvatar"), bubble?.parentElement?.querySelector(".elias-avatar")].filter(Boolean);
-      const setSpeaking = on => { if (id === tutorSpeakId) faces.forEach(face => face.classList.toggle("speaking", on)); };
+      const faces = [...document.querySelectorAll("#tutorPanel .elias-avatar.big, #tutorPanel .elias-avatar.huge"), bubble?.parentElement?.querySelector(".elias-avatar")].filter(Boolean);
+      const setSpeaking = on => {
+        if (id !== tutorSpeakId) return;
+        faces.forEach(face => face.classList.toggle("speaking", on));
+        tutorStatus(on ? "Speaking…" : "Write to me in English");
+      };
       if (window.speechSynthesis && (tutorVoiceOn || force)) {
         const say = new SpeechSynthesisUtterance(text.replace(/\s+/g, " "));
         const voice = tutorBestVoice();
         say.lang = voice?.lang || "en-US";
         if (voice) say.voice = voice;
-        say.rate = { beginner: .8, intermediate: .92, advanced: 1 }[document.getElementById("tutorLevel").value] || .9;
+        say.rate = rate || { beginner: .8, intermediate: .92, advanced: 1 }[document.getElementById("tutorLevel").value] || .9;
         say.pitch = .9;
-        say.onstart = () => setSpeaking(true);
-        say.onend = say.onerror = () => setSpeaking(false);
+        // If the device has no voice, or the browser blocks it, Elias still "talks" silently so the face never freezes.
+        const silent = () => {
+          if (id !== tutorSpeakId) return;
+          speechSynthesis.cancel();
+          setSpeaking(true);
+          setTimeout(() => setSpeaking(false), Math.min(4500, 700 + text.length * 40));
+        };
+        let started = false;
+        say.onstart = () => { started = true; setSpeaking(true); };
+        say.onend = () => setSpeaking(false);
+        say.onerror = () => { if (started) setSpeaking(false); else silent(); };
         speechSynthesis.speak(say);
+        setTimeout(() => { if (!started) silent(); }, 1500);
       } else {
         setSpeaking(true);
         setTimeout(() => setSpeaking(false), Math.min(4500, 700 + text.length * 40));
@@ -1970,8 +2029,19 @@
       bubble.append(listen);
     }
 
+    function tutorStatus(text) {
+      document.getElementById("tutorStatus").textContent = text;
+    }
+
+    function tutorThinking(on) {
+      document.querySelectorAll("#tutorPanel .elias-avatar.big, #tutorPanel .elias-avatar.huge").forEach(face => face.classList.toggle("thinking", on));
+      if (on) tutorStatus("Thinking…");
+      else if (!document.querySelector(".elias-avatar.speaking")) tutorStatus("Write to me in English");
+    }
+
     function tutorSetVoice(on) {
       tutorVoiceOn = on;
+      document.getElementById("tutorPanel").classList.toggle("voice-on", on);
       try { localStorage.setItem("my-sign-tutor-voice", on ? "on" : "off"); } catch {}
       const button = document.getElementById("tutorVoice");
       button.setAttribute("aria-pressed", String(on));
@@ -1993,6 +2063,7 @@
         chip.textContent = label;
         chips.append(chip);
       });
+      if (SpeechRec) chips.append(tutorChip("🎤 Practise speaking", "tutorPractice", "start"));
       hello.append(text, chips);
       const bubble = tutorAdd("bot", hello);
       tutorAddListen(bubble, "Hello! My name is Elias. I am your free English tutor. Choose your level, then write to me in English. I will help you with your mistakes.");
@@ -2005,6 +2076,8 @@
 
     function tutorReset() {
       tutorStopSpeaking();
+      tutorTarget = "";
+      tutorLastSentence = "";
       tutorHistory.length = 0;
       tutorSent = 0;
       document.getElementById("tutorMessages").replaceChildren();
@@ -2022,6 +2095,7 @@
       tutorAdd("user", text);
       tutorHistory.push({ role: "user", text });
       const waiting = tutorAdd("bot", "…");
+      tutorThinking(true);
       try {
         if (!db) throw new Error("offline");
         const { data, error } = await db.functions.invoke("english-tutor", { body: { level: document.getElementById("tutorLevel").value, messages: tutorHistory } });
@@ -2035,9 +2109,182 @@
         tutorHistory.pop();
       } finally {
         tutorBusy = false;
+        tutorThinking(false);
         const list = document.getElementById("tutorMessages");
         list.scrollTop = list.scrollHeight;
       }
+    }
+
+
+    // ----- Speaking practice: Elias listens and shows which words to improve -----
+    // The browser turns the learner's voice into text. Elias compares that text with the sentence and flags the words that did not match.
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const TUTOR_SENTENCES = {
+      beginner: ["Hello, my name is Elias.", "I would like a cup of tea.", "Where is the market?", "The weather is very nice today.", "I have two brothers and one sister.", "Can you help me, please?", "I go to school every morning.", "Thank you very much."],
+      intermediate: ["I have been learning English for six months.", "Could you tell me how to get to the station?", "I usually wake up early and drink coffee.", "She thinks the three brothers are thirsty.", "What do you do on the weekend?", "I would rather stay home than go outside.", "The meeting starts at half past nine."],
+      advanced: ["Although it was raining, we decided to walk to the library.", "Pronunciation takes patience, but practice makes progress.", "The thoroughly rehearsed performance impressed the audience.", "Could you please clarify what you mean by that?", "I wish I had started learning English earlier."]
+    };
+    const CONTRACTIONS = { "i'm": "i am", "i'd": "i would", "i'll": "i will", "i've": "i have", "don't": "do not", "doesn't": "does not", "didn't": "did not", "can't": "can not", "cannot": "can not", "won't": "will not", "isn't": "is not", "aren't": "are not", "wouldn't": "would not", "couldn't": "could not", "it's": "it is", "that's": "that is", "what's": "what is", "where's": "where is", "he's": "he is", "she's": "she is", "let's": "let us", "you're": "you are", "we're": "we are", "they're": "they are" };
+    const NUMBER_WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
+    let tutorTarget = "";
+    let tutorLastSentence = "";
+
+    function speechWords(text) {
+      return text.toLowerCase().replace(/[‘’]/g, "'").replace(/[^a-z0-9'\s]/g, " ").split(/\s+/).filter(Boolean)
+        .flatMap(word => (CONTRACTIONS[word] || word).split(" "))
+        .map(word => /^\d+$/.test(word) && Number(word) <= 10 ? NUMBER_WORDS[Number(word)] : word);
+    }
+
+    // Lines the two word lists up and marks each word of the sentence as heard or not heard (and what was heard instead).
+    function compareSpeech(targetText, spokenText) {
+      const target = speechWords(targetText);
+      const spoken = speechWords(spokenText);
+      const table = Array.from({ length: target.length + 1 }, () => new Array(spoken.length + 1).fill(0));
+      for (let i = target.length - 1; i >= 0; i--) {
+        for (let j = spoken.length - 1; j >= 0; j--) table[i][j] = target[i] === spoken[j] ? table[i + 1][j + 1] + 1 : Math.max(table[i + 1][j], table[i][j + 1]);
+      }
+      const words = [];
+      let missed = [];
+      let extra = [];
+      const flush = () => {
+        missed.forEach((word, index) => words.push({ word, ok: false, heard: extra[index] || "" }));
+        missed = [];
+        extra = [];
+      };
+      let i = 0;
+      let j = 0;
+      while (i < target.length && j < spoken.length) {
+        if (target[i] === spoken[j]) {
+          flush();
+          words.push({ word: target[i], ok: true });
+          i++;
+          j++;
+        } else if (table[i + 1][j] >= table[i][j + 1]) missed.push(target[i++]);
+        else extra.push(spoken[j++]);
+      }
+      while (i < target.length) missed.push(target[i++]);
+      while (j < spoken.length) extra.push(spoken[j++]);
+      flush();
+      return { words, score: target.length ? words.filter(word => word.ok).length / target.length : 0 };
+    }
+
+    function tutorSetListening(on) {
+      const mic = document.getElementById("tutorMic");
+      mic.classList.toggle("listening", on);
+      mic.setAttribute("aria-pressed", String(on));
+      document.querySelectorAll("#tutorPanel .elias-avatar.big, #tutorPanel .elias-avatar.huge").forEach(face => face.classList.toggle("listening", on));
+      if (on) tutorStatus("Listening… speak now");
+      else if (!document.querySelector(".elias-avatar.speaking")) tutorStatus("Write to me in English");
+    }
+
+    // Listens once. onHeard gets the possible versions of what was said (best first).
+    function tutorHear(onHeard) {
+      if (!SpeechRec) {
+        tutorAdd("bot", "Sorry, this browser cannot hear your voice. Please try Chrome, Edge, or Safari.");
+        return;
+      }
+      if (tutorListening) {
+        tutorListening.stop();
+        return;
+      }
+      tutorStopSpeaking();
+      const rec = new SpeechRec();
+      rec.lang = "en-US";
+      rec.interimResults = false;
+      rec.maxAlternatives = 3;
+      let heard = false;
+      let problem = "";
+      rec.onresult = event => {
+        heard = true;
+        onHeard(Array.from(event.results[0]).map(option => option.transcript.trim()).filter(Boolean));
+      };
+      rec.onerror = event => { problem = event.error; };
+      rec.onend = () => {
+        tutorListening = null;
+        tutorSetListening(false);
+        if (heard) return;
+        const messages = {
+          "not-allowed": "I cannot use your microphone. Please allow the microphone in your browser, then try again.",
+          "service-not-allowed": "I cannot use your microphone. Please allow the microphone in your browser, then try again.",
+          "audio-capture": "I cannot find a microphone on this device.",
+          "network": "The speech service is not working. Please check your internet and try again."
+        };
+        if (problem !== "aborted") tutorAdd("bot", messages[problem] || "I did not hear anything. Please try again, a little louder.");
+      };
+      tutorListening = rec;
+      tutorSetListening(true);
+      try { rec.start(); } catch { tutorListening = null; tutorSetListening(false); }
+    }
+
+    function tutorChip(label, attribute, value, className = "amelework-chip") {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = className;
+      chip.dataset[attribute] = value;
+      chip.append(label);
+      return chip;
+    }
+
+    function tutorPracticeShow(intro) {
+      const sentences = TUTOR_SENTENCES[document.getElementById("tutorLevel").value] || TUTOR_SENTENCES.beginner;
+      const options = sentences.filter(sentence => sentence !== tutorLastSentence);
+      tutorTarget = options[Math.floor(Math.random() * options.length)];
+      tutorLastSentence = tutorTarget;
+      const box = document.createElement("div");
+      const lead = document.createElement("p");
+      lead.textContent = intro;
+      const sentence = document.createElement("p");
+      sentence.className = "tutor-sentence";
+      sentence.textContent = tutorTarget;
+      const chips = document.createElement("div");
+      chips.className = "amelework-chips";
+      chips.append(tutorChip("🔊 Listen", "practice", "listen"), tutorChip("🎤 Say it", "practice", "say"), tutorChip("Next sentence", "practice", "next"));
+      box.append(lead, sentence, chips);
+      const bubble = tutorAdd("bot", box);
+      tutorSpeak(`${intro} ${tutorTarget}`, bubble, false, .8);
+    }
+
+    function tutorPracticeJudge(options) {
+      const results = options.map(text => ({ text, ...compareSpeech(tutorTarget, text) })).sort((a, b) => b.score - a.score);
+      const best = results[0];
+      tutorAdd("user", `🎤 ${best.text}`);
+      const wrong = best.words.filter(word => !word.ok);
+      const percent = Math.round(best.score * 100);
+      const message = !wrong.length ? "Excellent! I understood every word. Your speaking is very clear."
+        : percent >= 60 ? `Good try! I understood ${percent}% of the words. Let us practise the others.`
+        : "Let us try again, slowly. Listen first, then say it after me.";
+      const box = document.createElement("div");
+      const text = document.createElement("p");
+      text.textContent = message;
+      box.append(text);
+      if (wrong.length) {
+        const label = document.createElement("small");
+        label.textContent = "Words to practise";
+        const chips = document.createElement("div");
+        chips.className = "amelework-chips";
+        wrong.forEach(({ word, heard }) => {
+          const chip = tutorChip(`🔊 ${word}`, "sayWord", word, "amelework-chip tutor-word");
+          if (heard) {
+            const note = document.createElement("small");
+            note.textContent = `I heard “${heard}”`;
+            chip.append(note);
+          }
+          chips.append(chip);
+        });
+        box.append(label, chips);
+      }
+      const actions = document.createElement("div");
+      actions.className = "amelework-chips";
+      actions.append(tutorChip("🎤 Try again", "practice", "say"), tutorChip("🔊 Listen", "practice", "listen"), tutorChip("Next sentence", "practice", "next"));
+      box.append(actions);
+      const bubble = tutorAdd("bot", box);
+      tutorSpeak(wrong.length ? `${message} Listen to the first word: ${wrong[0].word}.` : message, bubble, false, .85);
+    }
+
+    function tutorPracticeAction(action, bubble) {
+      if (action === "next") tutorPracticeShow("Here is another sentence. Listen, then say it.");
+      else if (action === "listen") tutorSpeak(tutorTarget, bubble, true, .8);
+      else if (action === "say") tutorHear(tutorPracticeJudge);
     }
 
     document.getElementById("tutorForm").addEventListener("submit", event => {
@@ -2052,7 +2299,14 @@
       if (starter) tutorSend(starter.dataset.tutorStarter);
       const listen = event.target.closest(".tutor-listen");
       if (listen) tutorSpeak(listen.parentElement.dataset.say, listen.parentElement, true);
+      if (event.target.closest("[data-tutor-practice]")) tutorPracticeShow("Let us practise speaking. Listen, then say this sentence.");
+      const practice = event.target.closest("[data-practice]");
+      if (practice) tutorPracticeAction(practice.dataset.practice, practice.closest(".amelework-message"));
+      const word = event.target.closest("[data-say-word]");
+      if (word) tutorSpeak(word.dataset.sayWord, word.closest(".amelework-message"), true, .6);
     });
+    document.getElementById("tutorMic").hidden = !SpeechRec;
+    document.getElementById("tutorMic").addEventListener("click", () => tutorHear(options => tutorSend(options[0])));
     document.getElementById("tutorVoice").addEventListener("click", () => tutorSetVoice(!tutorVoiceOn));
     tutorSetVoice(tutorVoiceOn);
     if (window.speechSynthesis) speechSynthesis.getVoices();
@@ -3393,6 +3647,9 @@
        "practise english",
        "learn english",
        "speak english",
+       "pronunciation",
+       "pronounce",
+       "speaking practice",
        "english practice",
        "free tutor",
        "english lesson",
@@ -3403,6 +3660,7 @@
        "Press “Elias (AI tutor)” in the menu at the top of the page.",
        "Choose your level: Beginner, Intermediate, or Advanced.",
        "Elias, your AI tutor, says hello. Write to him in English. He answers, fixes your mistakes kindly, and asks you a question. You can also listen to his voice.",
+       "To practise speaking, press “Practise speaking”. Elias gives you a sentence, you say it with the microphone, and he shows which words to practise. You can also press the microphone button to speak to him instead of typing.",
        "It is free. Elias is an AI, so he can make mistakes. Do not share passwords or private details."
       ],
       "actions": [
