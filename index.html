@@ -71,6 +71,13 @@
     .browse-menu .browse-head, .browse-menu > h2 { padding-inline-end: 44px; }
     .teach-menu { padding: 0; border: 0; background: transparent; box-shadow: none; overflow: visible; }
     .teach-menu .creator-band { margin: 0; box-shadow: 0 30px 80px rgb(10 32 25 / 35%); }
+    .tutor-head { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 14px; padding-inline-end: 44px; }
+    .tutor-menu h2 { margin: 0; font-size: 22px; }
+    .tutor-tools { display: flex; align-items: center; gap: 9px; }
+    .tutor-messages { height: min(44vh, 380px); border: 1px solid var(--line); border-radius: 14px; }
+    .tutor-messages .amelework-message { white-space: pre-line; font-size: 14.5px; }
+    .tutor-form { padding: 12px 0 0; border-top: 0; }
+    .tutor-note { margin: 10px 0 0; color: var(--muted); font-size: 11.5px; line-height: 1.5; }
     .browse-menu .lesson-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .top-actions { display: flex; align-items: center; gap: 10px; }
     .account-pill { max-width: 145px; overflow: hidden; color: #53655b; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
@@ -400,7 +407,9 @@
       #top { min-height: calc(100vh - 100px); }
       .topbar { height: auto; flex-wrap: wrap; row-gap: 4px; padding-block: 9px 6px; }
       .top-nav { order: 3; display: flex; width: 100%; justify-content: space-between; gap: 4px; }
-      .top-nav .nav-drop { padding: 7px 8px; font-size: 11.5px; }
+      .top-nav { flex-wrap: wrap; justify-content: center; }
+      .top-nav .nav-drop { padding: 6px 7px; font-size: 11px; }
+      .tutor-head { flex-direction: column; align-items: start; }
       .top-actions { gap: 5px; }
       .top-actions .button { min-height: 34px; padding-inline: 9px; font-size: 10px; }
       .account-pill { max-width: 94px; overflow: hidden; padding-inline: 6px; font-size: 9px; }
@@ -441,6 +450,7 @@
       <button class="nav-drop" id="exploreButton" type="button" aria-expanded="false" aria-controls="browsePanel">Explore lessons<span class="nav-chevron" aria-hidden="true">⌄</span></button>
       <button class="nav-drop" id="howButton" type="button" aria-expanded="false" aria-controls="howPanel">How it works<span class="nav-chevron" aria-hidden="true">⌄</span></button>
       <button class="nav-drop" id="teachButton" type="button" aria-expanded="false" aria-controls="teachPanel">For tutors<span class="nav-chevron" aria-hidden="true">⌄</span></button>
+      <button class="nav-drop" id="tutorButton" type="button" aria-expanded="false" aria-controls="tutorPanel">AI English tutor<span class="nav-chevron" aria-hidden="true">⌄</span></button>
     </nav>
     <div class="top-actions">
       <label class="sr-only" for="languageSelect">Language</label>
@@ -480,6 +490,24 @@
       <button class="icon-close browse-menu-close" id="howClose" type="button" aria-label="Close">×</button>
       <h2 id="howTitle">Start in a few easy steps</h2>
       <div class="how-grid" id="howGrid"></div>
+    </div>
+    <div class="browse-menu tutor-menu" id="tutorPanel" role="region" aria-label="Free AI English tutor" data-no-translate hidden>
+      <button class="icon-close browse-menu-close" id="tutorClose" type="button" aria-label="Close">×</button>
+      <div class="tutor-head">
+        <div><p class="section-kicker">FREE AI ENGLISH TUTOR</p><h2>Practise English with me</h2><p class="section-intro">Write in English. I answer, fix your mistakes kindly, and ask you a question.</p></div>
+        <div class="tutor-tools">
+          <label class="sr-only" for="tutorLevel">Your English level</label>
+          <select class="sort-select" id="tutorLevel"><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select>
+          <button class="button outline small" id="tutorRestart" type="button">Start over</button>
+        </div>
+      </div>
+      <div class="amelework-messages tutor-messages" id="tutorMessages" aria-live="polite"></div>
+      <form class="amelework-form tutor-form" id="tutorForm">
+        <label class="sr-only" for="tutorInput">Your message in English</label>
+        <input id="tutorInput" name="message" maxlength="300" autocomplete="off" placeholder="Write in English…">
+        <button class="button small" type="submit">Send</button>
+      </form>
+      <p class="tutor-note">This is an AI, so it can make mistakes. Do not share passwords, phone numbers or other private details. Your messages are sent to Google to make the answers.</p>
     </div>
     <div class="browse-menu teach-menu" id="teachPanel" role="region" aria-label="For tutors" hidden>
       <section class="creator-band" id="teach" aria-labelledby="creatorTitle">
@@ -1823,18 +1851,119 @@
     document.getElementById("howGrid").innerHTML = howItWorksCard("learner") + howItWorksCard("teacher");
 
     // The top menu drops three panels down: Explore lessons, How it works, For tutors. Only one is open at a time.
-    var MENUS = { browse: ["exploreButton", "browsePanel"], how: ["howButton", "howPanel"], teach: ["teachButton", "teachPanel"] };
+    var MENUS = { browse: ["exploreButton", "browsePanel"], how: ["howButton", "howPanel"], teach: ["teachButton", "teachPanel"], tutor: ["tutorButton", "tutorPanel"] };
     function setMenu(name, open) {
       Object.entries(MENUS).forEach(([key, [buttonId, panelId]]) => {
         const show = open && key === name;
         document.getElementById(panelId).hidden = !show;
         document.getElementById(buttonId).setAttribute("aria-expanded", String(show));
       });
+      if (open && name === "tutor") tutorStart();
     }
     function closeMenus() { setMenu(null, false); }
     function setBrowseOpen(open) { setMenu("browse", open); }
     function setHowOpen(open) { setMenu("how", open); }
     function setTeachOpen(open) { setMenu("teach", open); }
+    function showTutor() {
+      setMenu("tutor", true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // ----- Free AI English tutor (Supabase function → Gemini) -----
+    const TUTOR_STARTERS = [
+      ["Introduce myself", "Let's practise introducing myself."],
+      ["At a restaurant", "Let's practise ordering food at a restaurant."],
+      ["Talk about my day", "Let's talk about my day."],
+      ["Job interview", "Let's practise a job interview."]
+    ];
+    const tutorHistory = [];
+    let tutorBusy = false;
+    let tutorSent = 0;
+
+    function tutorAdd(role, text) {
+      const bubble = document.createElement("div");
+      bubble.className = `amelework-message ${role}`;
+      if (typeof text === "string") bubble.textContent = text;
+      else bubble.append(text);
+      const list = document.getElementById("tutorMessages");
+      list.append(bubble);
+      list.scrollTop = list.scrollHeight;
+      return bubble;
+    }
+
+    function tutorGreet() {
+      const hello = document.createElement("div");
+      const text = document.createElement("p");
+      text.textContent = "Hello! I am your free English tutor. Choose your level, then write to me in English. I will help you with your mistakes. Try one of these, or write anything:";
+      const chips = document.createElement("div");
+      chips.className = "amelework-chips";
+      TUTOR_STARTERS.forEach(([label, message]) => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "amelework-chip";
+        chip.dataset.tutorStarter = message;
+        chip.textContent = label;
+        chips.append(chip);
+      });
+      hello.append(text, chips);
+      tutorAdd("bot", hello);
+    }
+
+    function tutorStart() {
+      if (!document.getElementById("tutorMessages").children.length) tutorGreet();
+      document.getElementById("tutorInput").focus({ preventScroll: true });
+    }
+
+    function tutorReset() {
+      tutorHistory.length = 0;
+      tutorSent = 0;
+      document.getElementById("tutorMessages").replaceChildren();
+      tutorGreet();
+    }
+
+    async function tutorSend(text) {
+      if (tutorBusy || !text) return;
+      if (tutorSent >= 60) {
+        tutorAdd("bot", "That is a lot of good practice for today! Come back later and we can continue.");
+        return;
+      }
+      tutorBusy = true;
+      tutorSent += 1;
+      tutorAdd("user", text);
+      tutorHistory.push({ role: "user", text });
+      const waiting = tutorAdd("bot", "…");
+      try {
+        if (!db) throw new Error("offline");
+        const { data, error } = await db.functions.invoke("english-tutor", { body: { level: document.getElementById("tutorLevel").value, messages: tutorHistory } });
+        if (error || !data?.reply) throw error || new Error("empty");
+        waiting.textContent = data.reply;
+        tutorHistory.push({ role: "bot", text: data.reply });
+      } catch {
+        waiting.textContent = "Sorry, I cannot answer right now. Please wait a minute and try again.";
+        tutorHistory.pop();
+      } finally {
+        tutorBusy = false;
+        const list = document.getElementById("tutorMessages");
+        list.scrollTop = list.scrollHeight;
+      }
+    }
+
+    document.getElementById("tutorForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const input = document.getElementById("tutorInput");
+      const text = input.value.trim();
+      input.value = "";
+      tutorSend(text);
+    });
+    document.getElementById("tutorMessages").addEventListener("click", event => {
+      const starter = event.target.closest("[data-tutor-starter]");
+      if (starter) tutorSend(starter.dataset.tutorStarter);
+    });
+    document.getElementById("tutorRestart").addEventListener("click", tutorReset);
+    document.getElementById("tutorLevel").addEventListener("change", event => {
+      const label = event.target.options[event.target.selectedIndex].text;
+      tutorAdd("bot", `OK, your level is now ${label}.`);
+    });
     function showBrowse() {
       setBrowseOpen(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1842,14 +1971,14 @@
     Object.entries(MENUS).forEach(([name, [buttonId, panelId]]) => {
       document.getElementById(buttonId).addEventListener("click", () => setMenu(name, document.getElementById(panelId).hidden));
     });
-    ["browseClose", "howClose"].forEach(id => document.getElementById(id).addEventListener("click", closeMenus));
+    ["browseClose", "howClose", "tutorClose"].forEach(id => document.getElementById(id).addEventListener("click", closeMenus));
     document.addEventListener("click", event => {
       // composedPath() still knows where the click happened even if that button was removed meanwhile.
       if (event.composedPath().some(node => node.matches?.(".browse-menu, .nav-drop, #teacherSearchForm, .amelework, .backdrop"))) return;
       closeMenus();
     });
     document.addEventListener("keydown", event => { if (event.key === "Escape") closeMenus(); });
-    const hashMenu = { "#browse": "browse", "#how-it-works": "how", "#teach": "teach" }[location.hash];
+    const hashMenu = { "#browse": "browse", "#how-it-works": "how", "#teach": "teach", "#english-tutor": "tutor" }[location.hash];
     if (hashMenu) setMenu(hashMenu, true);
     document.getElementById("teacherSearchForm").addEventListener("submit", event => {
       event.preventDefault();
@@ -3155,6 +3284,36 @@
       "popular": true
      },
      {
+      "id": "aitutor",
+      "title": "Free AI English tutor",
+      "keywords": [
+       "english tutor",
+       "ai tutor",
+       "ai english",
+       "practice english",
+       "practise english",
+       "learn english",
+       "speak english",
+       "english practice",
+       "free tutor",
+       "english lesson",
+       "english teacher"
+      ],
+      "steps": [
+       "Press “AI English tutor” in the menu at the top of the page.",
+       "Choose your level: Beginner, Intermediate, or Advanced.",
+       "Write to the tutor in English. It answers, fixes your mistakes kindly, and asks you a question.",
+       "It is free. It is an AI, so it can make mistakes. Do not share passwords or private details."
+      ],
+      "actions": [
+       [
+        "Open the AI tutor",
+        "ai-tutor"
+       ]
+      ],
+      "popular": true
+     },
+     {
       "id": "support",
       "title": "Contact a person",
       "keywords": [
@@ -3296,6 +3455,7 @@
         { target: "#lessonGrid", before: () => setBrowseOpen(true), title: "Lessons from tutors", text: "Each card is a lesson from a tutor. Open one to read about it and request a lesson." },
         { target: "#languageSelect", title: "Your language", text: "Press here to change the language of the website." },
         { target: "#howPanel", before: () => setHowOpen(true), title: "How it works", text: "Press How it works at the top to see these steps for learners and tutors." },
+        { target: "#tutorPanel", before: () => setMenu("tutor", true), title: "Free AI English tutor", text: "Press AI English tutor at the top to practise English with a friendly AI. It fixes your mistakes and asks you questions." },
         { target: "#teach", before: () => setTeachOpen(true), title: "Are you a tutor?", text: "Press For tutors at the top. Tutors can share free or paid lessons." },
         { target: "#joinButton", title: "Join My Sign", text: "To request lessons or share lessons, you need an account. Press Join at the top of the page.", extra: [["Help me join", "guide-join"]] },
         { target: "#dashboardTabs", title: "Your account", text: "These tabs open the different parts of your account, like your requests, your community and your profile." }
@@ -3426,6 +3586,8 @@
         dashboardMode = false;
         updateAccountHeader();
         showBrowse();
+      } else if (action === "ai-tutor") {
+        showTutor();
       } else if (action === "profile") {
         if (!account) {
           openDialog("signInBackdrop");
