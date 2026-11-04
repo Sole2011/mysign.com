@@ -710,11 +710,11 @@
   </div>
 
   <div class="amelework" data-no-translate>
-    <button class="amelework-launcher" id="ameleworkLauncher" type="button" aria-expanded="false" aria-controls="ameleworkPanel"><span aria-hidden="true">💬</span> Ask Amelework</button>
+    <button class="amelework-launcher" id="ameleworkLauncher" type="button" aria-expanded="false" aria-controls="ameleworkPanel"><span aria-hidden="true">💬</span> Ask Hana</button>
     <section class="amelework-panel" id="ameleworkPanel" role="dialog" aria-labelledby="ameleworkTitle" hidden>
       <header class="amelework-head">
-        <span class="amelework-avatar" aria-hidden="true">A</span>
-        <div><strong id="ameleworkTitle">Amelework</strong><small>My Sign helper</small></div>
+        <span class="amelework-avatar" aria-hidden="true">H</span>
+        <div><strong id="ameleworkTitle">Hana</strong><small>My Sign helper</small></div>
         <button class="icon-close" type="button" id="ameleworkClose" aria-label="Close chat">×</button>
       </header>
       <div class="amelework-messages" id="ameleworkMessages" aria-live="polite"></div>
@@ -2557,7 +2557,7 @@
       showToast(`Lesson published for learners in ${countryName(account.country)}.`);
     });
 
-    // ----- Amelework: the built-in help chat (English only; AI answers via Gemini, keyword answers as backup) -----
+    // ----- Hana (Amelework in the code): the built-in help chat (English only; AI answers via Gemini, keyword answers as backup) -----
     // Each topic lists the words people might type; the topic with the most matching words answers.
     const AMELEWORK_TOPICS = [
      {
@@ -3128,7 +3128,7 @@
       if (open && !document.getElementById("ameleworkMessages").children.length) {
         const hello = document.createElement("div");
         const text = document.createElement("p");
-        text.textContent = "Hi! I'm Amelework, the My Sign helper. Ask me how to use the site, or choose a topic below.";
+        text.textContent = "Hi! I'm Hana, the My Sign helper. Ask me how to use the site, or choose a topic below.";
         const label = document.createElement("small");
         label.textContent = "Popular questions";
         hello.append(text, label, ameleworkChips(AMELEWORK_TOPICS.filter(topic => topic.popular)));
