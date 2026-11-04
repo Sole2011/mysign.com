@@ -200,10 +200,19 @@
     .dashboard-panel.how-it-works { margin: 0 0 18px; padding: 0; border: 0; background: transparent; }
     .dashboard-panel.getting-started { margin-bottom: 18px; border-color: #bcd6c5; background: #f2f8f4; }
     .getting-started .dashboard-actions { margin-top: 14px; }
-    .creator-band { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 22px; margin: 0 0 65px; padding: 24px 27px; border-radius: 7px; background: #f0e7d2; }
-    .creator-band h2 { font-family: "DM Serif Display", Georgia, serif; font-size: 22px; font-weight: 400; }
-    .creator-band p { margin: 6px 0 0; color: #70674f; font-size: 11px; line-height: 1.6; }
-    .creator-band .button { white-space: nowrap; }
+    .creator-band { position: relative; isolation: isolate; overflow: hidden; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 22px; margin: 0 0 65px; padding: 42px 48px; border-radius: 26px; background: linear-gradient(125deg, var(--green-dark) 0%, var(--green) 58%, #2d8268 100%); color: #fff; box-shadow: 0 24px 54px rgb(23 97 75 / 24%); }
+    .creator-band::before, .creator-band::after { content: ""; position: absolute; z-index: -1; border-radius: 50%; }
+    .creator-band::before { width: 260px; height: 260px; inset-inline-end: -60px; top: -110px; background: rgb(226 184 80 / 28%); }
+    .creator-band::after { width: 190px; height: 190px; inset-inline-start: 38%; bottom: -110px; background: rgb(255 255 255 / 8%); box-shadow: 0 0 0 26px rgb(255 255 255 / 5%); }
+    .creator-band .section-kicker { display: inline-block; padding: 6px 12px; border-radius: 99px; background: rgb(255 255 255 / 14%); color: var(--gold); }
+    .creator-band h2 { margin: 8px 0 0; font-family: "DM Serif Display", Georgia, serif; font-size: 32px; font-weight: 400; line-height: 1.15; }
+    .creator-band p { margin: 10px 0 0; max-width: 520px; color: rgb(255 255 255 / 82%); font-size: 14px; line-height: 1.6; }
+    .creator-band .section-kicker { margin: 0; font-size: 10px; }
+    .creator-band .button { min-height: 50px; padding: 0 24px; border-radius: 99px; background: var(--gold); color: #282d20; font-size: 13px; white-space: nowrap; box-shadow: 0 10px 24px rgb(0 0 0 / 22%); }
+    .creator-band .button:hover { background: #f0c864; }
+    .creator-icons { display: flex; gap: 10px; margin-top: 18px; }
+    .creator-icons span { display: grid; width: 44px; height: 44px; place-items: center; border-radius: 14px; background: rgb(255 255 255 / 14%); font-size: 22px; }
+    .creator-icons span:nth-child(2) { translate: 0 -6px; }
     .dashboard { min-height: 570px; padding: 35px 0 58px; }
     .dashboard-head { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 24px; }
     .dashboard-head h1 { margin: 0; font-size: 30px; }
@@ -379,7 +388,8 @@
       .lesson-grid { grid-template-columns: 1fr; gap: 12px; }
       .lesson-cover { aspect-ratio: 1.85; }
       .lesson-card h3, .lesson-description { min-height: 0; }
-      .creator-band { grid-template-columns: 1fr; margin-bottom: 40px; padding: 20px; }
+      .creator-band { grid-template-columns: 1fr; margin-bottom: 40px; padding: 30px 22px; border-radius: 20px; }
+      .creator-band h2 { font-size: 26px; }
       .how-grid { grid-template-columns: 1fr; }
       .recommend-grid { grid-template-columns: 1fr; }
       .creator-band .button { justify-self: start; }
@@ -464,7 +474,7 @@
       </section>
 
       <section class="creator-band public-only" id="teach" aria-labelledby="creatorTitle">
-        <div><p class="section-kicker">FOR TUTORS</p><h2 id="creatorTitle">Your knowledge can open doors.</h2><p>Share what you know. Choose what to make free, and set a fair price for the rest.</p></div>
+        <div><p class="section-kicker">FOR TUTORS</p><h2 id="creatorTitle">Your knowledge can open doors.</h2><p>Share what you know. Choose what to make free, and set a fair price for the rest.</p><div class="creator-icons" aria-hidden="true"><span>📚</span><span>💡</span><span>🌟</span></div></div>
         <button class="button" id="publishBand" type="button">Share your first lesson <span aria-hidden="true">→</span></button>
       </section>
 
