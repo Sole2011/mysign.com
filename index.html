@@ -116,7 +116,7 @@
     .hero-search .button { min-height: 46px; padding-inline: 20px; }
     .hero-link { margin-top: 14px; padding: 0; border: 0; background: transparent; color: var(--green); font-size: 11px; font-weight: 700; cursor: pointer; }
 
-    .browse { padding: 27px 0 65px; scroll-margin-top: 20px; }
+    .browse { padding: 27px 0 40px; scroll-margin-top: 20px; }
     .browse .section-kicker { margin-bottom: 5px; }
     .browse h2 { font-size: 20px; }
     .browse-head { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 19px; }
@@ -457,8 +457,10 @@
       </section>
 
       <section class="browse public-only" id="browse" aria-labelledby="browseTitle">
+        <button class="how-toggle" id="browseToggle" type="button" aria-expanded="false" aria-controls="browsePanel"><span class="how-toggle-title" id="browseTitle">Browse tutors</span><span class="how-chevron" aria-hidden="true">⌄</span></button>
+        <div class="how-panel" id="browsePanel" hidden>
         <div class="browse-head">
-          <div><p class="section-kicker">TUTOR DIRECTORY</p><h2 id="browseTitle">Browse tutors</h2><p class="section-intro" id="browseIntro">Choose a free lesson or a paid session with a tutor.</p></div>
+          <div><p class="section-kicker">TUTOR DIRECTORY</p><p class="section-intro" id="browseIntro">Choose a free lesson or a paid session with a tutor.</p></div>
           <div class="browse-tools">
             <label class="sr-only" for="sortLessons">Sort lessons</label><select class="sort-select" id="sortLessons"><option value="featured">Featured</option><option value="free">Free first</option></select>
           </div>
@@ -472,6 +474,7 @@
           <button class="filter" type="button" data-category="My lessons" aria-pressed="false">My lessons</button>
         </div>
         <div class="lesson-grid" id="lessonGrid" aria-live="polite"></div>
+        </div>
       </section>
 
       <section class="how-it-works public-only" id="how-it-works">
@@ -1606,7 +1609,8 @@
     document.getElementById("findTutorsButton").addEventListener("click", () => {
       dashboardMode = false;
       updateAccountHeader();
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      setBrowseOpen(true);
+      document.getElementById("browse").scrollIntoView({ behavior: "smooth", block: "start" });
     });
     document.getElementById("dashboardPublishButton").addEventListener("click", openPublish);
     document.getElementById("signOutButton").addEventListener("click", async () => {
@@ -1806,6 +1810,21 @@
     document.getElementById("howToggle").addEventListener("click", () => setHowOpen(document.getElementById("howPanel").hidden));
     document.querySelectorAll('a[href="#how-it-works"]').forEach(link => link.addEventListener("click", () => setHowOpen(true)));
     if (location.hash === "#how-it-works") setHowOpen(true);
+
+    // "Browse tutors" also stays closed until someone presses it, or searches, or uses "Explore lessons".
+    function setBrowseOpen(open) {
+      document.getElementById("browsePanel").hidden = !open;
+      document.getElementById("browseToggle").setAttribute("aria-expanded", String(open));
+    }
+    document.getElementById("browseToggle").addEventListener("click", () => setBrowseOpen(document.getElementById("browsePanel").hidden));
+    document.querySelectorAll('a[href="#browse"]').forEach(link => link.addEventListener("click", () => setBrowseOpen(true)));
+    if (location.hash === "#browse") setBrowseOpen(true);
+    document.getElementById("teacherSearchForm").addEventListener("submit", event => {
+      event.preventDefault();
+      setBrowseOpen(true);
+      document.getElementById("browse").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    document.getElementById("searchInput").addEventListener("input", event => { if (event.target.value.trim()) setBrowseOpen(true); });
     document.getElementById("reportForm").addEventListener("submit", async event => {
       event.preventDefault();
       if (!requireDatabase() || !account) return;
@@ -3242,8 +3261,8 @@
       tour: [
         { title: "Welcome to My Sign", text: "I will show you the website one step at a time. Press Next to start." },
         { target: "#teacherSearchForm", title: "Search for a tutor", text: "Type what you want to learn here, for example English or maths. Then press Find tutors." },
-        { target: ".filter-row", title: "Free or paid", text: "Choose All lessons, Free, or Paid to see the kind of lesson you want." },
-        { target: "#lessonGrid", title: "Lessons from tutors", text: "Each card is a lesson from a tutor. Open one to read about it and request a lesson." },
+        { target: ".filter-row", before: () => setBrowseOpen(true), title: "Free or paid", text: "Choose All lessons, Free, or Paid to see the kind of lesson you want." },
+        { target: "#lessonGrid", before: () => setBrowseOpen(true), title: "Lessons from tutors", text: "Each card is a lesson from a tutor. Open one to read about it and request a lesson." },
         { target: "#languageSelect", title: "Your language", text: "Press here to change the language of the website." },
         { target: "#how-it-works", before: () => setHowOpen(true), title: "How it works", text: "These steps show how learners and tutors use My Sign." },
         { target: "#teach", title: "Are you a tutor?", text: "Tutors can share free or paid lessons here." },
@@ -3372,6 +3391,7 @@
       } else if (action === "browse") {
         dashboardMode = false;
         updateAccountHeader();
+        setBrowseOpen(true);
         document.getElementById("browse").scrollIntoView({ behavior: "smooth", block: "start" });
       } else if (action === "profile") {
         if (!account) {
