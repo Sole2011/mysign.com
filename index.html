@@ -54,13 +54,22 @@
     button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid #89c0a3; outline-offset: 2px; }
     .shell { width: min(1380px, 100%); margin: auto; padding: 0 38px; }
 
-    .topbar { display: flex; align-items: center; justify-content: space-between; height: 73px; border-bottom: 1px solid var(--line); }
+    .topbar { position: relative; z-index: 9; display: flex; align-items: center; justify-content: space-between; height: 73px; border-bottom: 1px solid var(--line); }
     .brand { display: flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-size: 17px; font-weight: 700; }
     .brand-mark { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 50%; background: var(--green); color: #fff; font-family: Georgia, serif; font-size: 18px; }
     .brand-mark span { color: var(--gold); }
     .top-nav { display: flex; align-items: center; gap: 27px; }
     .top-nav a { color: #596962; font-size: 12px; text-decoration: none; }
     .top-nav a:hover { color: var(--green); }
+    .nav-drop { display: inline-flex; align-items: center; gap: 4px; padding: 8px 12px; border: 0; border-radius: 99px; background: transparent; color: #596962; font: inherit; font-size: 12px; cursor: pointer; }
+    .nav-drop:hover, .nav-drop[aria-expanded="true"] { background: var(--green-soft); color: var(--green); }
+    .nav-chevron { display: inline-block; font-size: 16px; line-height: 1; padding-bottom: 5px; transition: rotate .2s; }
+    .nav-drop[aria-expanded="true"] .nav-chevron { rotate: 180deg; }
+    .browse-menu { position: absolute; z-index: 1; inset-inline: 38px; top: calc(100% + 8px); max-height: min(80vh, 780px); overflow-y: auto; padding: 26px 28px 30px; border: 1px solid var(--line); border-top: 5px solid var(--green); border-radius: 0 0 22px 22px; background: var(--paper); box-shadow: 0 30px 80px rgb(10 32 25 / 28%); }
+    .browse-menu[hidden] { display: none; }
+    .browse-menu-close { position: absolute; inset-block-start: 14px; inset-inline-end: 16px; z-index: 1; }
+    .browse-menu .browse-head { padding-inline-end: 44px; }
+    .browse-menu .lesson-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .top-actions { display: flex; align-items: center; gap: 10px; }
     .account-pill { max-width: 145px; overflow: hidden; color: #53655b; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
     .language-select { height: 36px; max-width: 118px; padding: 0 8px; border: 1px solid var(--line); border-radius: 18px; background: #fff; color: var(--ink); font: inherit; font-size: 12px; cursor: pointer; }
@@ -116,9 +125,7 @@
     .hero-search .button { min-height: 46px; padding-inline: 20px; }
     .hero-link { margin-top: 14px; padding: 0; border: 0; background: transparent; color: var(--green); font-size: 11px; font-weight: 700; cursor: pointer; }
 
-    .browse { padding: 27px 0 40px; scroll-margin-top: 20px; }
-    .browse .section-kicker { margin-bottom: 5px; }
-    .browse h2 { font-size: 20px; }
+    .browse-menu .section-kicker { margin-bottom: 5px; }
     .browse-head { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 19px; }
     .section-kicker { margin: 0 0 6px; color: var(--green); font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
     h2 { margin: 0; font-size: 22px; }
@@ -370,8 +377,9 @@
 
     @media (max-width: 850px) {
       .shell { padding-inline: 23px; }
-      .lesson-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .lesson-grid, .browse-menu .lesson-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .top-nav { gap: 15px; }
+      .browse-menu { inset-inline: 23px; }
     }
     @media (max-width: 620px) {
       .shell { padding-inline: 16px; }
@@ -385,13 +393,13 @@
 
       h1 { font-size: 30px; }
       .hero-search .button { padding-inline: 12px; font-size: 10px; }
-      .browse { padding-top: 22px; }
+      .browse-menu { inset-inline: 12px; padding: 22px 16px 24px; }
       .browse-head { align-items: start; flex-direction: column; }
       .browse-tools { width: 100%; }
       .search-wrap { flex: 1; }
       .browse-tools .search-input { width: 100%; }
       .sort-select { max-width: 130px; }
-      .lesson-grid { grid-template-columns: 1fr; gap: 12px; }
+      .lesson-grid, .browse-menu .lesson-grid { grid-template-columns: 1fr; gap: 12px; }
       .lesson-cover { aspect-ratio: 1.85; }
       .lesson-card h3, .lesson-description { min-height: 0; }
       .creator-band { grid-template-columns: 1fr; margin-bottom: 40px; padding: 30px 22px; border-radius: 20px; }
@@ -415,7 +423,7 @@
   <header class="shell topbar">
     <a class="brand" href="#top" aria-label="My Sign home"><span class="brand-mark" aria-hidden="true">M<span>.</span></span> My Sign</a>
     <nav class="top-nav" aria-label="Main navigation">
-      <a href="#browse">Explore lessons</a>
+      <button class="nav-drop" id="exploreButton" type="button" aria-expanded="false" aria-controls="browsePanel">Explore lessons<span class="nav-chevron" aria-hidden="true">⌄</span></button>
       <a href="#how-it-works">How it works</a>
       <a href="#teach">For tutors</a>
     </nav>
@@ -434,6 +442,24 @@
       <button class="account-pill" id="accountPill" type="button" hidden></button>
       <button class="button outline small" id="signOutButton" type="button" hidden>Sign out</button>
       <button class="button small" id="joinButton" type="button">Join</button>
+    </div>
+    <div class="browse-menu" id="browsePanel" role="region" aria-label="Tutor directory" hidden>
+      <button class="icon-close browse-menu-close" id="browseClose" type="button" aria-label="Close">×</button>
+      <div class="browse-head">
+          <div><p class="section-kicker">TUTOR DIRECTORY</p><p class="section-intro" id="browseIntro">Choose a free lesson or a paid session with a tutor.</p></div>
+          <div class="browse-tools">
+            <label class="sr-only" for="sortLessons">Sort lessons</label><select class="sort-select" id="sortLessons"><option value="featured">Featured</option><option value="free">Free first</option></select>
+          </div>
+        </div>
+        <div id="recommendedStrip"></div>
+        <div class="filter-row" role="group" aria-label="Filter lessons by topic">
+          <span class="filter-label">SHOW</span>
+          <button class="filter" type="button" data-category="All" aria-pressed="true">All lessons</button>
+          <button class="filter" type="button" data-category="Free" aria-pressed="false">Free</button>
+          <button class="filter" type="button" data-category="Paid" aria-pressed="false">Paid</button>
+          <button class="filter" type="button" data-category="My lessons" aria-pressed="false">My lessons</button>
+        </div>
+        <div class="lesson-grid" id="lessonGrid" aria-live="polite"></div>
     </div>
   </header>
 
@@ -456,26 +482,6 @@
         </div>
       </section>
 
-      <section class="browse public-only" id="browse" aria-labelledby="browseTitle">
-        <button class="how-toggle" id="browseToggle" type="button" aria-expanded="false" aria-controls="browsePanel"><span class="how-toggle-title" id="browseTitle">Browse tutors</span><span class="how-chevron" aria-hidden="true">⌄</span></button>
-        <div class="how-panel" id="browsePanel" hidden>
-        <div class="browse-head">
-          <div><p class="section-kicker">TUTOR DIRECTORY</p><p class="section-intro" id="browseIntro">Choose a free lesson or a paid session with a tutor.</p></div>
-          <div class="browse-tools">
-            <label class="sr-only" for="sortLessons">Sort lessons</label><select class="sort-select" id="sortLessons"><option value="featured">Featured</option><option value="free">Free first</option></select>
-          </div>
-        </div>
-        <div id="recommendedStrip"></div>
-        <div class="filter-row" role="group" aria-label="Filter lessons by topic">
-          <span class="filter-label">SHOW</span>
-          <button class="filter" type="button" data-category="All" aria-pressed="true">All lessons</button>
-          <button class="filter" type="button" data-category="Free" aria-pressed="false">Free</button>
-          <button class="filter" type="button" data-category="Paid" aria-pressed="false">Paid</button>
-          <button class="filter" type="button" data-category="My lessons" aria-pressed="false">My lessons</button>
-        </div>
-        <div class="lesson-grid" id="lessonGrid" aria-live="polite"></div>
-        </div>
-      </section>
 
       <section class="how-it-works public-only" id="how-it-works">
         <button class="how-toggle" id="howToggle" type="button" aria-expanded="false" aria-controls="howPanel"><span class="how-toggle-title">How it works</span><span class="how-chevron" aria-hidden="true">⌄</span></button>
@@ -1064,6 +1070,7 @@
       document.getElementById("joinButton").hidden = Boolean(account);
       document.getElementById("signOutButton").hidden = !account;
       document.querySelector(".top-nav").hidden = showDashboard;
+      if (showDashboard) setBrowseOpen(false);
       document.querySelectorAll(".public-only").forEach(section => { section.hidden = showDashboard; });
       document.getElementById("dashboardView").hidden = !showDashboard;
       document.getElementById("notificationsButton").hidden = !account;
@@ -1609,8 +1616,7 @@
     document.getElementById("findTutorsButton").addEventListener("click", () => {
       dashboardMode = false;
       updateAccountHeader();
-      setBrowseOpen(true);
-      document.getElementById("browse").scrollIntoView({ behavior: "smooth", block: "start" });
+      showBrowse();
     });
     document.getElementById("dashboardPublishButton").addEventListener("click", openPublish);
     document.getElementById("signOutButton").addEventListener("click", async () => {
@@ -1811,18 +1817,27 @@
     document.querySelectorAll('a[href="#how-it-works"]').forEach(link => link.addEventListener("click", () => setHowOpen(true)));
     if (location.hash === "#how-it-works") setHowOpen(true);
 
-    // "Browse tutors" also stays closed until someone presses it, or searches, or uses "Explore lessons".
+    // "Explore lessons" drops the tutor directory down from the top menu.
     function setBrowseOpen(open) {
       document.getElementById("browsePanel").hidden = !open;
-      document.getElementById("browseToggle").setAttribute("aria-expanded", String(open));
+      document.getElementById("exploreButton").setAttribute("aria-expanded", String(open));
     }
-    document.getElementById("browseToggle").addEventListener("click", () => setBrowseOpen(document.getElementById("browsePanel").hidden));
-    document.querySelectorAll('a[href="#browse"]').forEach(link => link.addEventListener("click", () => setBrowseOpen(true)));
-    if (location.hash === "#browse") setBrowseOpen(true);
+    function showBrowse() {
+      setBrowseOpen(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    document.getElementById("exploreButton").addEventListener("click", () => setBrowseOpen(document.getElementById("browsePanel").hidden));
+    document.getElementById("browseClose").addEventListener("click", () => setBrowseOpen(false));
+    document.addEventListener("click", event => {
+      if (document.getElementById("browsePanel").hidden) return;
+      // composedPath() still knows where the click happened even if that button was removed meanwhile.
+      if (event.composedPath().some(node => node.matches?.("#browsePanel, #exploreButton, #teacherSearchForm, .amelework, .backdrop"))) return;
+      setBrowseOpen(false);
+    });
+    document.addEventListener("keydown", event => { if (event.key === "Escape") setBrowseOpen(false); });
     document.getElementById("teacherSearchForm").addEventListener("submit", event => {
       event.preventDefault();
-      setBrowseOpen(true);
-      document.getElementById("browse").scrollIntoView({ behavior: "smooth", block: "start" });
+      showBrowse();
     });
     document.getElementById("searchInput").addEventListener("input", event => { if (event.target.value.trim()) setBrowseOpen(true); });
     document.getElementById("reportForm").addEventListener("submit", async event => {
@@ -3263,7 +3278,7 @@
         { target: "#teacherSearchForm", title: "Search for a tutor", text: "Type what you want to learn here, for example English or maths. Then press Find tutors." },
         { target: ".filter-row", before: () => setBrowseOpen(true), title: "Free or paid", text: "Choose All lessons, Free, or Paid to see the kind of lesson you want." },
         { target: "#lessonGrid", before: () => setBrowseOpen(true), title: "Lessons from tutors", text: "Each card is a lesson from a tutor. Open one to read about it and request a lesson." },
-        { target: "#languageSelect", title: "Your language", text: "Press here to change the language of the website." },
+        { target: "#languageSelect", before: () => setBrowseOpen(false), title: "Your language", text: "Press here to change the language of the website." },
         { target: "#how-it-works", before: () => setHowOpen(true), title: "How it works", text: "These steps show how learners and tutors use My Sign." },
         { target: "#teach", title: "Are you a tutor?", text: "Tutors can share free or paid lessons here." },
         { target: "#joinButton", title: "Join My Sign", text: "To request lessons or share lessons, you need an account. Press Join at the top of the page.", extra: [["Help me join", "guide-join"]] },
@@ -3391,8 +3406,7 @@
       } else if (action === "browse") {
         dashboardMode = false;
         updateAccountHeader();
-        setBrowseOpen(true);
-        document.getElementById("browse").scrollIntoView({ behavior: "smooth", block: "start" });
+        showBrowse();
       } else if (action === "profile") {
         if (!account) {
           openDialog("signInBackdrop");
