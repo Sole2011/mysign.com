@@ -324,6 +324,13 @@
     .amelework-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
     .amelework-chip { padding: 6px 10px; border: 1px solid #bcd6c5; border-radius: 99px; background: #f2f8f4; color: var(--green); font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; }
     .amelework-chip:hover { background: var(--green-soft); }
+    .hana-spot { outline: 3px solid var(--gold); outline-offset: 4px; border-radius: 8px; scroll-margin: 24px 0; animation: hana-pulse 1.4s ease-in-out infinite; }
+    @keyframes hana-pulse { 50% { outline-color: var(--green); } }
+    body.hana-join .backdrop { justify-items: start; }
+    @media (max-width: 960px) {
+      body.hana-join .amelework-panel { height: auto; max-height: 250px; }
+      body.hana-join .amelework-messages > :not(:last-child), body.hana-join .amelework-form { display: none; }
+    }
     .amelework-form { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--line); }
     .amelework-form input { flex: 1; min-width: 0; min-height: 40px; padding: 0 12px; border: 1.5px solid #dde4dc; border-radius: 99px; font: inherit; font-size: 14px; }
     .amelework-form input:focus { border-color: var(--green); outline: none; box-shadow: 0 0 0 3px rgb(23 97 75 / 12%); }
@@ -2578,7 +2585,13 @@
        "already have an account",
        "already registered",
        "join again",
-       "same email"
+       "same email",
+       "help me join",
+       "help me to join",
+       "help me sign up",
+       "help me register",
+       "guide me to join",
+       "join step by step"
       ],
       "steps": [
        "Press Join at the top of the page.",
@@ -2588,9 +2601,15 @@
        "Confirm you are 18 or older, accept the rules, and press Join.",
        "Already have an account? Don't join again with the same email. Just sign in, or press “Forgot password?” if you can't remember your password."
       ],
-      "action": [
-       "Join now",
-       "join"
+      "actions": [
+       [
+        "Guide me step by step",
+        "guide-join"
+       ],
+       [
+        "Open the join form",
+        "join"
+       ]
       ],
       "popular": true
      },
@@ -2969,6 +2988,74 @@
       ]
      },
      {
+      "id": "about",
+      "title": "What is My Sign?",
+      "keywords": [
+       "what is my sign",
+       "about my sign",
+       "what is this site",
+       "what is this website",
+       "what is this",
+       "what is this place",
+       "what can i do here",
+       "tell me about",
+       "what do you do",
+       "about the website",
+       "about the site",
+       "what does this site do"
+      ],
+      "steps": [
+       "My Sign is a website where learners find tutors for one-to-one lessons.",
+       "Tutors share free lessons or paid lessons. Learners send a request for a lesson, online or in person.",
+       "You only see and connect with people in your own country.",
+       "My Sign does not handle money. Learners pay the tutor directly.",
+       "The website works in English, Arabic, Chinese, French, Russian, Spanish and Amharic."
+      ],
+      "actions": [
+       [
+        "Show me around",
+        "tour"
+       ]
+      ],
+      "popular": true
+     },
+     {
+      "id": "tour",
+      "title": "Show me around the website",
+      "keywords": [
+       "show me around",
+       "tour",
+       "website tour",
+       "guide me",
+       "walk me through",
+       "step by step",
+       "show me the website",
+       "show me the site",
+       "see the website",
+       "see the site",
+       "look around",
+       "how does the website work",
+       "how does the site work",
+       "how to use the website",
+       "how to use the site",
+       "how to use this site",
+       "how to use this website",
+       "explore the website",
+       "explore the site"
+      ],
+      "steps": [
+       "I can walk you through the website one step at a time.",
+       "I point to each part of the page and explain it. Press Next to continue."
+      ],
+      "actions": [
+       [
+        "Start the tour",
+        "tour"
+       ]
+      ],
+      "popular": true
+     },
+     {
       "id": "support",
       "title": "Contact a person",
       "keywords": [
@@ -3044,21 +3131,21 @@
         steps.append(item);
       });
       answer.append(title, steps);
-      if (topic.action) {
+      (topic.actions || (topic.action ? [topic.action] : [])).forEach(([label, name]) => {
         const action = document.createElement("button");
         action.type = "button";
         action.className = "button small";
-        action.dataset.ameleworkAction = topic.action[1];
-        action.textContent = topic.action[0];
-        answer.append(action);
-      }
+        action.dataset.ameleworkAction = name;
+        action.textContent = label;
+        answer.append(action, " ");
+      });
       ameleworkAdd("bot", answer);
     }
 
     function ameleworkReply(question) {
       const topic = ameleworkMatch(question);
       if (topic) {
-        ameleworkAnswer(topic);
+        ameleworkOpenTopic(topic, question);
         return;
       }
       const fallback = document.createElement("div");
@@ -3101,7 +3188,129 @@
       }
     }
 
+    // ----- Hana's step-by-step guides: a tour of the website, and help to join -----
+    const HANA_GUIDES = {
+      tour: [
+        { title: "Welcome to My Sign", text: "I will show you the website one step at a time. Press Next to start." },
+        { target: "#teacherSearchForm", title: "Search for a tutor", text: "Type what you want to learn here, for example English or maths. Then press Find tutors." },
+        { target: ".filter-row", title: "Free or paid", text: "Choose All lessons, Free, or Paid to see the kind of lesson you want." },
+        { target: "#lessonGrid", title: "Lessons from tutors", text: "Each card is a lesson from a tutor. Open one to read about it and request a lesson." },
+        { target: "#languageSelect", title: "Your language", text: "Press here to change the language of the website." },
+        { target: "#how-it-works", title: "How it works", text: "These steps show how learners and tutors use My Sign." },
+        { target: "#teach", title: "Are you a tutor?", text: "Tutors can share free or paid lessons here." },
+        { target: "#joinButton", title: "Join My Sign", text: "To request lessons or share lessons, you need an account. Press Join at the top of the page.", extra: [["Help me join", "guide-join"]] },
+        { target: "#dashboardTabs", title: "Your account", text: "These tabs open the different parts of your account, like your requests, your community and your profile." }
+      ],
+      join: [
+        { title: "Let's join together", text: "I will open the join form and point to each box. Press Next to start." },
+        { dialog: "joinBackdrop", target: "#joinName", title: "Your name", text: "Type your name. Other members will see it." },
+        { target: "#joinEmail", title: "Your email", text: "Type your email address. Use one you can open, because we may send you a message to confirm your account." },
+        { target: "#joinPassword", title: "Choose a password", text: "Make a password with at least 8 characters. Keep it secret. I will never ask you for it." },
+        { target: "#joinCountry", title: "Your country", text: "Choose your country. You will only see and connect with people in this country, and you cannot change it later." },
+        { target: "#joinForm .role-options", title: "Learner or tutor", text: "Choose Learner to find lessons. Choose Tutor to share lessons." },
+        { target: "#teacherTaxAgreement", title: "Tutor responsibility", text: "As a tutor, tick this box if you accept responsibility for your own tax and legal duties." },
+        { target: "#acceptSafetyPolicy", title: "The rules", text: "Read the rules, then tick the box if you are 18 or older and you agree." },
+        { target: "#joinForm button[type=submit]", title: "Press Join", text: "Now press the Join button. If we ask you to confirm your email, open your inbox, press the link, then sign in." }
+      ]
+    };
+    let hanaGuide = null;
+
+    function hanaTarget(step, open = true) {
+      if (step.dialog && open && document.getElementById(step.dialog).hidden) openDialog(step.dialog);
+      if (!step.target) return { ok: true, el: null };
+      const el = document.querySelector(step.target);
+      const ok = !!el && (el.offsetParent !== null || getComputedStyle(el).position === "fixed");
+      return { ok, el };
+    }
+
+    function hanaClearSpot() {
+      document.querySelectorAll(".hana-spot").forEach(el => el.classList.remove("hana-spot"));
+      document.querySelectorAll(".hana-guide-nav").forEach(nav => nav.remove());
+    }
+
+    function hanaGuideStop(message) {
+      hanaClearSpot();
+      document.body.classList.remove("hana-join");
+      hanaGuide = null;
+      if (message) ameleworkAdd("bot", message);
+    }
+
+    function hanaGuideStart(name) {
+      if (name === "join" && currentAccount()) {
+        ameleworkAdd("bot", "You are already signed in, so you do not need to join again.");
+        return;
+      }
+      hanaGuideStop();
+      hanaGuide = { name, index: -1, number: 0 };
+      if (name === "join") document.body.classList.add("hana-join");
+      hanaGuideMove(1);
+    }
+
+    function hanaGuideMove(direction) {
+      const steps = HANA_GUIDES[hanaGuide.name];
+      let index = hanaGuide.index;
+      for (;;) {
+        index += direction;
+        if (index < 0) return;
+        if (index >= steps.length) {
+          hanaGuideStop(hanaGuide.name === "join" ? "Good luck! Ask me if you need any help." : "That is the end of the tour. Ask me anything you want to know about My Sign.");
+          return;
+        }
+        const found = hanaTarget(steps[index]);
+        if (found.ok) {
+          hanaGuide.index = index;
+          hanaGuide.number = Math.max(1, hanaGuide.number + direction);
+          hanaGuideShow(steps[index], found.el);
+          return;
+        }
+      }
+    }
+
+    function hanaGuideShow(step, el) {
+      hanaClearSpot();
+      const steps = HANA_GUIDES[hanaGuide.name];
+      const hasNext = steps.slice(hanaGuide.index + 1).some(next => hanaTarget(next, false).ok || next.dialog);
+      const bubble = document.createElement("div");
+      const label = document.createElement("small");
+      label.textContent = `Step ${hanaGuide.number}`;
+      const title = document.createElement("strong");
+      title.textContent = step.title;
+      const text = document.createElement("p");
+      text.textContent = step.text;
+      const nav = document.createElement("div");
+      nav.className = "amelework-chips hana-guide-nav";
+      const button = (caption, attribute, value) => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "amelework-chip";
+        chip.dataset[attribute] = value;
+        chip.textContent = caption;
+        nav.append(chip);
+      };
+      if (hanaGuide.number > 1) button("← Back", "hanaGuide", "back");
+      button(hasNext ? "Next →" : "Done", "hanaGuide", "next");
+      (step.extra || []).forEach(([caption, action]) => button(caption, "ameleworkAction", action));
+      button("Stop", "hanaGuide", "stop");
+      bubble.append(label, title, text, nav);
+      ameleworkAdd("bot", bubble);
+      const spot = el ? (el.closest(".field") || el) : null;
+      if (spot) {
+        spot.classList.add("hana-spot");
+        spot.scrollIntoView({ behavior: "smooth", block: document.body.classList.contains("hana-join") ? "start" : "center" });
+      }
+    }
+
+    function ameleworkOpenTopic(topic, question = "") {
+      if (topic.id === "tour") hanaGuideStart("tour");
+      else if (topic.id === "join" && /\b(help|guide|show|walk|step)/i.test(question)) hanaGuideStart("join");
+      else ameleworkAnswer(topic);
+    }
+
     function ameleworkAction(action) {
+      if (action === "tour" || action === "guide-join") {
+        hanaGuideStart(action === "tour" ? "tour" : "join");
+        return;
+      }
       setAmeleworkOpen(false);
       if (action === "join") openDialog("joinBackdrop");
       else if (action === "signin") openDialog("signInBackdrop");
@@ -3134,10 +3343,20 @@
       if (open && !document.getElementById("ameleworkMessages").children.length) {
         const hello = document.createElement("div");
         const text = document.createElement("p");
-        text.textContent = "Hi! I'm Hana, the My Sign helper. Ask me how to use the site, or choose a topic below.";
+        text.textContent = "Hi! I'm Hana, the My Sign helper. I can show you around the website step by step, help you join, or answer your questions.";
+        const start = document.createElement("div");
+        start.className = "amelework-chips";
+        [["Show me around", "tour"], ...(currentAccount() ? [] : [["Help me join", "guide-join"]])].forEach(([caption, action]) => {
+          const chip = document.createElement("button");
+          chip.type = "button";
+          chip.className = "amelework-chip";
+          chip.dataset.ameleworkAction = action;
+          chip.textContent = caption;
+          start.append(chip);
+        });
         const label = document.createElement("small");
         label.textContent = "Popular questions";
-        hello.append(text, label, ameleworkChips(AMELEWORK_TOPICS.filter(topic => topic.popular)));
+        hello.append(text, start, label, ameleworkChips(AMELEWORK_TOPICS.filter(topic => topic.popular && topic.id !== "tour")));
         ameleworkAdd("bot", hello);
       }
       if (open) document.getElementById("ameleworkInput").focus();
@@ -3159,7 +3378,14 @@
       if (chip) {
         const topic = AMELEWORK_TOPICS.find(item => item.id === chip.dataset.ameleworkTopic);
         ameleworkAdd("user", topic.title);
-        ameleworkAnswer(topic);
+        ameleworkOpenTopic(topic);
+        return;
+      }
+      const guide = event.target.closest("[data-hana-guide]");
+      if (guide) {
+        if (!hanaGuide) return;
+        if (guide.dataset.hanaGuide === "stop") hanaGuideStop("OK, I stopped. Ask me anything, or press a button to start again.");
+        else hanaGuideMove(guide.dataset.hanaGuide === "back" ? -1 : 1);
         return;
       }
       const action = event.target.closest("[data-amelework-action]");
