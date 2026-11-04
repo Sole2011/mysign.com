@@ -68,7 +68,9 @@
     .browse-menu { position: absolute; z-index: 1; inset-inline: 38px; top: calc(100% + 8px); max-height: min(80vh, 780px); overflow-y: auto; padding: 26px 28px 30px; border: 1px solid var(--line); border-top: 5px solid var(--green); border-radius: 0 0 22px 22px; background: var(--paper); box-shadow: 0 30px 80px rgb(10 32 25 / 28%); }
     .browse-menu[hidden] { display: none; }
     .browse-menu-close { position: absolute; inset-block-start: 14px; inset-inline-end: 16px; z-index: 1; }
-    .browse-menu .browse-head { padding-inline-end: 44px; }
+    .browse-menu .browse-head, .browse-menu > h2 { padding-inline-end: 44px; }
+    .teach-menu { padding: 0; border: 0; background: transparent; box-shadow: none; overflow: visible; }
+    .teach-menu .creator-band { margin: 0; box-shadow: 0 30px 80px rgb(10 32 25 / 35%); }
     .browse-menu .lesson-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .top-actions { display: flex; align-items: center; gap: 10px; }
     .account-pill { max-width: 145px; overflow: hidden; color: #53655b; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
@@ -198,13 +200,7 @@
     .recommend-strip-head h3 { margin: 0; font-size: 17px; }
     .recommend-badge { padding: 4px 9px; border-radius: 99px; background: var(--gold); color: #282d20; font-size: 10.5px; font-weight: 700; letter-spacing: .3px; text-transform: uppercase; }
     .how-it-works { margin: 0 0 40px; }
-    .how-it-works h2 { margin: 0 0 18px; font-size: 24px; }
-    .how-toggle { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 26px; border: 1px solid var(--line); border-radius: 16px; background: #fff; color: var(--ink); font: inherit; font-size: 19px; font-weight: 700; text-align: start; cursor: pointer; box-shadow: 0 8px 24px rgb(17 45 35 / 6%); transition: border-color .15s, box-shadow .15s; }
-    .how-toggle:hover { border-color: var(--green); box-shadow: 0 10px 28px rgb(23 97 75 / 14%); }
-    .how-toggle[aria-expanded="true"] { border-color: var(--green); }
-    .how-chevron { display: grid; width: 34px; height: 34px; flex: 0 0 auto; place-items: center; border-radius: 50%; background: var(--green-soft); color: var(--green); font-size: 22px; line-height: 1; padding-bottom: 6px; transition: rotate .2s; }
-    .how-toggle[aria-expanded="true"] .how-chevron { rotate: 180deg; }
-    .how-panel { margin-top: 20px; }
+    .how-it-works h2, .browse-menu > h2 { margin: 0 0 18px; font-size: 24px; }
     .how-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .how-card { padding: 22px 24px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
     .how-card h3 { margin: 0 0 12px; font-size: 17px; }
@@ -385,7 +381,9 @@
       .shell { padding-inline: 16px; }
       .topbar { height: 62px; }
       .brand { font-size: 15px; }
-      .top-nav { display: none; }
+      .topbar { height: auto; flex-wrap: wrap; row-gap: 4px; padding-block: 9px 6px; }
+      .top-nav { order: 3; display: flex; width: 100%; justify-content: space-between; gap: 4px; }
+      .top-nav .nav-drop { padding: 7px 8px; font-size: 11.5px; }
       .top-actions { gap: 5px; }
       .top-actions .button { min-height: 34px; padding-inline: 9px; font-size: 10px; }
       .account-pill { max-width: 94px; overflow: hidden; padding-inline: 6px; font-size: 9px; }
@@ -424,8 +422,8 @@
     <a class="brand" href="#top" aria-label="My Sign home"><span class="brand-mark" aria-hidden="true">M<span>.</span></span> My Sign</a>
     <nav class="top-nav" aria-label="Main navigation">
       <button class="nav-drop" id="exploreButton" type="button" aria-expanded="false" aria-controls="browsePanel">Explore lessons<span class="nav-chevron" aria-hidden="true">⌄</span></button>
-      <a href="#how-it-works">How it works</a>
-      <a href="#teach">For tutors</a>
+      <button class="nav-drop" id="howButton" type="button" aria-expanded="false" aria-controls="howPanel">How it works<span class="nav-chevron" aria-hidden="true">⌄</span></button>
+      <button class="nav-drop" id="teachButton" type="button" aria-expanded="false" aria-controls="teachPanel">For tutors<span class="nav-chevron" aria-hidden="true">⌄</span></button>
     </nav>
     <div class="top-actions">
       <label class="sr-only" for="languageSelect">Language</label>
@@ -461,6 +459,17 @@
         </div>
         <div class="lesson-grid" id="lessonGrid" aria-live="polite"></div>
     </div>
+    <div class="browse-menu" id="howPanel" role="region" aria-label="How it works" hidden>
+      <button class="icon-close browse-menu-close" id="howClose" type="button" aria-label="Close">×</button>
+      <h2 id="howTitle">Start in a few easy steps</h2>
+      <div class="how-grid" id="howGrid"></div>
+    </div>
+    <div class="browse-menu teach-menu" id="teachPanel" role="region" aria-label="For tutors" hidden>
+      <section class="creator-band" id="teach" aria-labelledby="creatorTitle">
+        <div><p class="section-kicker">FOR TUTORS</p><h2 id="creatorTitle">Your knowledge can open doors.</h2><p>Share what you know. Choose what to make free, and set a fair price for the rest.</p><div class="creator-icons" aria-hidden="true"><span>📚</span><span>💡</span><span>🌟</span></div></div>
+        <button class="button" id="publishBand" type="button">Share your first lesson <span aria-hidden="true">→</span></button>
+      </section>
+    </div>
   </header>
 
   <main>
@@ -483,18 +492,7 @@
       </section>
 
 
-      <section class="how-it-works public-only" id="how-it-works">
-        <button class="how-toggle" id="howToggle" type="button" aria-expanded="false" aria-controls="howPanel"><span class="how-toggle-title">How it works</span><span class="how-chevron" aria-hidden="true">⌄</span></button>
-        <div class="how-panel" id="howPanel" hidden>
-          <h2 id="howTitle">Start in a few easy steps</h2>
-          <div class="how-grid" id="howGrid"></div>
-        </div>
-      </section>
 
-      <section class="creator-band public-only" id="teach" aria-labelledby="creatorTitle">
-        <div><p class="section-kicker">FOR TUTORS</p><h2 id="creatorTitle">Your knowledge can open doors.</h2><p>Share what you know. Choose what to make free, and set a fair price for the rest.</p><div class="creator-icons" aria-hidden="true"><span>📚</span><span>💡</span><span>🌟</span></div></div>
-        <button class="button" id="publishBand" type="button">Share your first lesson <span aria-hidden="true">→</span></button>
-      </section>
 
 
       <footer class="public-only">
@@ -1070,7 +1068,7 @@
       document.getElementById("joinButton").hidden = Boolean(account);
       document.getElementById("signOutButton").hidden = !account;
       document.querySelector(".top-nav").hidden = showDashboard;
-      if (showDashboard) setBrowseOpen(false);
+      if (showDashboard) closeMenus();
       document.querySelectorAll(".public-only").forEach(section => { section.hidden = showDashboard; });
       document.getElementById("dashboardView").hidden = !showDashboard;
       document.getElementById("notificationsButton").hidden = !account;
@@ -1808,33 +1806,35 @@
     document.getElementById("bookingLesson").addEventListener("change", updateBookingFormats);
     document.getElementById("howGrid").innerHTML = howItWorksCard("learner") + howItWorksCard("teacher");
 
-    // "How it works" stays closed until someone presses it, then shows the steps.
-    function setHowOpen(open) {
-      document.getElementById("howPanel").hidden = !open;
-      document.getElementById("howToggle").setAttribute("aria-expanded", String(open));
+    // The top menu drops three panels down: Explore lessons, How it works, For tutors. Only one is open at a time.
+    var MENUS = { browse: ["exploreButton", "browsePanel"], how: ["howButton", "howPanel"], teach: ["teachButton", "teachPanel"] };
+    function setMenu(name, open) {
+      Object.entries(MENUS).forEach(([key, [buttonId, panelId]]) => {
+        const show = open && key === name;
+        document.getElementById(panelId).hidden = !show;
+        document.getElementById(buttonId).setAttribute("aria-expanded", String(show));
+      });
     }
-    document.getElementById("howToggle").addEventListener("click", () => setHowOpen(document.getElementById("howPanel").hidden));
-    document.querySelectorAll('a[href="#how-it-works"]').forEach(link => link.addEventListener("click", () => setHowOpen(true)));
-    if (location.hash === "#how-it-works") setHowOpen(true);
-
-    // "Explore lessons" drops the tutor directory down from the top menu.
-    function setBrowseOpen(open) {
-      document.getElementById("browsePanel").hidden = !open;
-      document.getElementById("exploreButton").setAttribute("aria-expanded", String(open));
-    }
+    function closeMenus() { setMenu(null, false); }
+    function setBrowseOpen(open) { setMenu("browse", open); }
+    function setHowOpen(open) { setMenu("how", open); }
+    function setTeachOpen(open) { setMenu("teach", open); }
     function showBrowse() {
       setBrowseOpen(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-    document.getElementById("exploreButton").addEventListener("click", () => setBrowseOpen(document.getElementById("browsePanel").hidden));
-    document.getElementById("browseClose").addEventListener("click", () => setBrowseOpen(false));
-    document.addEventListener("click", event => {
-      if (document.getElementById("browsePanel").hidden) return;
-      // composedPath() still knows where the click happened even if that button was removed meanwhile.
-      if (event.composedPath().some(node => node.matches?.("#browsePanel, #exploreButton, #teacherSearchForm, .amelework, .backdrop"))) return;
-      setBrowseOpen(false);
+    Object.entries(MENUS).forEach(([name, [buttonId, panelId]]) => {
+      document.getElementById(buttonId).addEventListener("click", () => setMenu(name, document.getElementById(panelId).hidden));
     });
-    document.addEventListener("keydown", event => { if (event.key === "Escape") setBrowseOpen(false); });
+    ["browseClose", "howClose"].forEach(id => document.getElementById(id).addEventListener("click", closeMenus));
+    document.addEventListener("click", event => {
+      // composedPath() still knows where the click happened even if that button was removed meanwhile.
+      if (event.composedPath().some(node => node.matches?.(".browse-menu, .nav-drop, #teacherSearchForm, .amelework, .backdrop"))) return;
+      closeMenus();
+    });
+    document.addEventListener("keydown", event => { if (event.key === "Escape") closeMenus(); });
+    const hashMenu = { "#browse": "browse", "#how-it-works": "how", "#teach": "teach" }[location.hash];
+    if (hashMenu) setMenu(hashMenu, true);
     document.getElementById("teacherSearchForm").addEventListener("submit", event => {
       event.preventDefault();
       showBrowse();
@@ -3278,9 +3278,9 @@
         { target: "#teacherSearchForm", title: "Search for a tutor", text: "Type what you want to learn here, for example English or maths. Then press Find tutors." },
         { target: ".filter-row", before: () => setBrowseOpen(true), title: "Free or paid", text: "Choose All lessons, Free, or Paid to see the kind of lesson you want." },
         { target: "#lessonGrid", before: () => setBrowseOpen(true), title: "Lessons from tutors", text: "Each card is a lesson from a tutor. Open one to read about it and request a lesson." },
-        { target: "#languageSelect", before: () => setBrowseOpen(false), title: "Your language", text: "Press here to change the language of the website." },
-        { target: "#how-it-works", before: () => setHowOpen(true), title: "How it works", text: "These steps show how learners and tutors use My Sign." },
-        { target: "#teach", title: "Are you a tutor?", text: "Tutors can share free or paid lessons here." },
+        { target: "#languageSelect", title: "Your language", text: "Press here to change the language of the website." },
+        { target: "#howPanel", before: () => setHowOpen(true), title: "How it works", text: "Press How it works at the top to see these steps for learners and tutors." },
+        { target: "#teach", before: () => setTeachOpen(true), title: "Are you a tutor?", text: "Press For tutors at the top. Tutors can share free or paid lessons." },
         { target: "#joinButton", title: "Join My Sign", text: "To request lessons or share lessons, you need an account. Press Join at the top of the page.", extra: [["Help me join", "guide-join"]] },
         { target: "#dashboardTabs", title: "Your account", text: "These tabs open the different parts of your account, like your requests, your community and your profile." }
       ],
@@ -3300,7 +3300,10 @@
 
     function hanaTarget(step, open = true) {
       if (step.dialog && open && document.getElementById(step.dialog).hidden) openDialog(step.dialog);
-      if (open && step.before) step.before();
+      if (open) {
+        closeMenus();
+        step.before?.();
+      }
       if (!step.target) return { ok: true, el: null };
       const el = document.querySelector(step.target);
       const ok = !!el && (el.offsetParent !== null || getComputedStyle(el).position === "fixed");
