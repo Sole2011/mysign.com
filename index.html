@@ -99,6 +99,18 @@
     .tutor-mic.listening { border-color: var(--red); background: var(--red); color: #fff; animation: mic-pulse 1.1s ease-in-out infinite; }
     @keyframes mic-pulse { 50% { box-shadow: 0 0 0 6px rgb(202 99 79 / 28%); } }
     .tutor-photo { display: block; width: 240px; max-width: 100%; height: auto; margin: 0 0 6px; border-radius: 10px; }
+    .tutor-row .tutor-wide { width: min(580px, 78vw); max-width: none; }
+    .tutor-edit-text { display: block; width: 100%; min-height: 130px; margin: 8px 0 0; padding: 10px 12px; border: 1.5px solid #dde4dc; border-radius: 10px; background: #fff; font: inherit; font-size: 14px; line-height: 1.55; resize: vertical; }
+    .tutor-edit-text:focus { border-color: var(--green); outline: none; box-shadow: 0 0 0 3px rgb(23 97 75 / 12%); }
+    .tutor-edit-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 8px; }
+    .tutor-edit-row select { min-height: 34px; padding: 0 8px; border: 1px solid var(--line); border-radius: 8px; background: #fff; font: inherit; font-size: 12.5px; }
+    .tutor-edit-count { margin-inline-start: auto; color: var(--muted); font-size: 11.5px; }
+    .tutor-edit-result { margin: 8px 0; padding: 12px 14px; border-radius: 10px; background: #f2f8f4; color: var(--green-dark); line-height: 1.65; white-space: pre-wrap; }
+    .tutor-changes { margin: 6px 0 0; padding-inline-start: 18px; font-size: 13.5px; line-height: 1.55; }
+    .tutor-changes li { margin-bottom: 5px; }
+    .tutor-changes del { color: #a14b3a; }
+    .tutor-changes strong { color: var(--green); }
+    .tutor-changes span { color: var(--muted); }
     .tutor-sentence { margin: 8px 0; padding: 10px 12px; border-radius: 10px; background: #f2f8f4; color: var(--green-dark); font-size: 17px; font-weight: 700; line-height: 1.4; }
     .tutor-word { border-color: #e7b9ae; background: #fbefeb; color: #8f3f2e; }
     .amelework-message .tutor-word small { display: inline; margin: 0 0 0 4px; font-size: 11px; font-weight: 400; letter-spacing: 0; text-transform: none; color: #8f3f2e; }
@@ -2091,6 +2103,7 @@
         chip.textContent = label;
         chips.append(chip);
       });
+      chips.append(tutorChip("✍️ Edit my writing", "tutorEdit", "open"));
       if (SpeechRec) chips.append(tutorChip("🎤 Practise speaking", "tutorPractice", "start"));
       hello.append(text, chips);
       const bubble = tutorAdd("bot", hello);
@@ -2104,6 +2117,7 @@
 
     function tutorReset() {
       tutorStopSpeaking();
+      tutorEdits = 0;
       tutorTarget = "";
       tutorLastSentence = "";
       tutorHistory.length = 0;
@@ -2371,6 +2385,152 @@
         tutorSend(caption, photo);
       } catch {
         tutorAdd("bot", "I cannot open this picture. Please try a different photo (JPG or PNG).");
+      }
+    });
+
+
+    // ----- Edit my writing: a whole paragraph in, the corrected paragraph and a list of changes out -----
+    let tutorEdits = 0;
+
+    function tutorEditBox(intro) {
+      const box = document.createElement("div");
+      const lead = document.createElement("p");
+      lead.textContent = intro;
+      const area = document.createElement("textarea");
+      area.className = "tutor-edit-text";
+      area.maxLength = 1500;
+      area.placeholder = "Write or paste your text here…";
+      area.setAttribute("aria-label", "Your text for Elias to edit");
+      const row = document.createElement("div");
+      row.className = "tutor-edit-row";
+      const style = document.createElement("select");
+      style.setAttribute("aria-label", "How much should Elias change?");
+      style.append(new Option("Keep my words", "keep"), new Option("Make it sound natural", "natural"));
+      const run = document.createElement("button");
+      run.type = "button";
+      run.className = "button small";
+      run.dataset.editRun = "1";
+      run.textContent = "Check my writing";
+      const count = document.createElement("span");
+      count.className = "tutor-edit-count";
+      count.textContent = "0 / 1500";
+      area.addEventListener("input", () => { count.textContent = `${area.value.length} / 1500`; });
+      row.append(style, run, count);
+      box.append(lead, area, row);
+      const bubble = tutorAdd("bot", box);
+      bubble.classList.add("tutor-wide");
+      area.focus({ preventScroll: true });
+    }
+
+    function tutorEditRender(bubble, data, original) {
+      const box = document.createElement("div");
+      const lead = document.createElement("p");
+      lead.textContent = data.changes.length ? "Here is your corrected text:" : "Excellent! I found nothing to fix. Here is your text:";
+      const result = document.createElement("div");
+      result.className = "tutor-edit-result";
+      result.textContent = data.corrected;
+      box.append(lead, result);
+      if (data.changes.length) {
+        const label = document.createElement("small");
+        label.textContent = "What I changed";
+        const list = document.createElement("ul");
+        list.className = "tutor-changes";
+        data.changes.forEach(change => {
+          const item = document.createElement("li");
+          const from = document.createElement("del");
+          from.textContent = change.from;
+          const to = document.createElement("strong");
+          to.textContent = change.to;
+          const why = document.createElement("span");
+          why.textContent = change.reason ? ` — ${change.reason}` : "";
+          item.append(from, " → ", to, why);
+          list.append(item);
+        });
+        box.append(label, list);
+      }
+      if (data.tip) {
+        const tip = document.createElement("p");
+        tip.textContent = `Tip: ${data.tip}`;
+        box.append(tip);
+      }
+      const actions = document.createElement("div");
+      actions.className = "amelework-chips";
+      actions.append(tutorChip("📋 Copy", "editAction", "copy"), tutorChip("🔊 Listen", "editAction", "listen"), tutorChip("✍️ Edit another", "editAction", "again"));
+      box.append(actions);
+      bubble.replaceChildren(box);
+      bubble.classList.add("tutor-wide");
+      bubble.dataset.say = data.corrected;
+      bubble.dataset.copy = data.corrected;
+    }
+
+    async function tutorEditSend(text, style) {
+      if (tutorBusy) return;
+      if (tutorEdits >= 10 || tutorSent >= 60) {
+        tutorAdd("bot", "That is a lot of good writing for today! Come back later and we can edit more.");
+        return;
+      }
+      tutorBusy = true;
+      tutorEdits += 1;
+      tutorSent += 1;
+      const mine = tutorAdd("user", text);
+      mine.style.whiteSpace = "pre-wrap";
+      const waiting = tutorAdd("bot", "I am reading your text carefully…");
+      tutorThinking(true);
+      try {
+        if (!db) throw new Error("offline");
+        const { data, error } = await db.functions.invoke("english-tutor", { body: { mode: "edit", level: document.getElementById("tutorLevel").value, style, text } });
+        if (error || !data?.corrected) throw error || new Error("empty");
+        tutorEditRender(waiting, { corrected: data.corrected, changes: data.changes || [], tip: data.tip || "" }, text);
+        tutorHistory.push({ role: "user", text: `[I sent a paragraph to edit] ${text.slice(0, 200)}` });
+        tutorHistory.push({ role: "bot", text: `I corrected your paragraph. Main changes: ${(data.changes || []).slice(0, 4).map(c => `${c.from} → ${c.to}`).join("; ") || "none"}.` });
+        try { tutorSpeak(data.changes?.length ? "Here is your corrected text. I will tell you what I changed." : "Excellent! I found nothing to fix.", waiting); } catch { /* a voice problem must never hide the result */ }
+      } catch {
+        waiting.textContent = "Sorry, I cannot edit your text right now. Please wait a minute and try again. Your text is still in the box above.";
+      } finally {
+        tutorBusy = false;
+        tutorThinking(false);
+        // Show the start of Elias's answer (the corrected text), not the end of it.
+        const list = document.getElementById("tutorMessages");
+        list.scrollTop = Math.max(0, (waiting.closest(".tutor-row") || waiting).offsetTop - list.offsetTop - 8);
+      }
+    }
+
+    document.getElementById("tutorMessages").addEventListener("click", event => {
+      if (event.target.closest("[data-tutor-edit]")) tutorEditBox("Write or paste your text here (up to about 250 words). I will correct it and show you what I changed.");
+      const run = event.target.closest("[data-edit-run]");
+      if (run) {
+        const box = run.closest(".amelework-message");
+        const area = box.querySelector("textarea");
+        const text = area.value.trim();
+        if (!text) { area.focus(); return; }
+        const style = box.querySelector("select").value;
+        box.querySelectorAll("textarea, select, button").forEach(control => { control.disabled = true; });
+        tutorEditSend(text, style);
+      }
+      const action = event.target.closest("[data-edit-action]");
+      if (action) {
+        const bubble = action.closest(".amelework-message");
+        if (action.dataset.editAction === "again") tutorEditBox("Paste your next text here.");
+        else if (action.dataset.editAction === "listen") tutorSpeak(bubble.dataset.say, bubble, true);
+        else if (action.dataset.editAction === "copy") {
+          const done = () => { action.textContent = "✓ Copied"; setTimeout(() => { action.textContent = "📋 Copy"; }, 1800); };
+          // Older browsers, or a browser that refuses clipboard access, use the old copy method.
+          const oldWay = () => {
+            const temp = document.createElement("textarea");
+            temp.value = bubble.dataset.copy;
+            temp.style.position = "fixed";
+            temp.style.opacity = "0";
+            document.body.append(temp);
+            temp.select();
+            let copied = false;
+            try { copied = document.execCommand("copy"); } catch { /* ignore */ }
+            temp.remove();
+            if (copied) done();
+            else action.textContent = "Press and hold the text to copy";
+          };
+          if (navigator.clipboard?.writeText) navigator.clipboard.writeText(bubble.dataset.copy).then(done, oldWay);
+          else oldWay();
+        }
       }
     });
 
@@ -3575,6 +3735,11 @@
       "title": "Edit your profile and picture",
       "keywords": [
        "profile",
+       "edit my writing",
+       "check my writing",
+       "proofread",
+       "correct my paragraph",
+       "grammar check",
        "picture",
        "photo",
        "avatar",
@@ -3759,6 +3924,7 @@
        "Press “Elias (AI tutor)” in the menu at the top of the page.",
        "Choose your level: Beginner, Intermediate, or Advanced.",
        "Elias, your AI tutor, says hello. Write to him in English. He answers, fixes your mistakes kindly, and asks you a question. You can also listen to his voice.",
+       "To fix a longer text, press “Edit my writing”, paste your paragraph, and Elias gives you the corrected text and a list of what he changed.",
        "You can also press the camera button and send Elias a picture. He describes it in simple English, gives you useful words, and asks you to describe it too.",
        "To practise speaking, press “Practise speaking”. Elias gives you a sentence, you say it with the microphone, and he shows which words to practise. You can also press the microphone button to speak to him instead of typing.",
        "It is free. Elias is an AI, so he can make mistakes. Do not share passwords or private details."
