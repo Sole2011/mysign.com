@@ -550,6 +550,7 @@
         <div class="tutor-tools">
           <label class="sr-only" for="tutorLevel">Your English level</label>
           <select class="sort-select" id="tutorLevel"><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select>
+          <select class="sort-select" id="tutorVoicePick" aria-label="Elias's voice" hidden></select>
           <button class="button outline small" id="tutorVoice" type="button" aria-pressed="true">🔊 Voice on</button>
           <button class="button outline small" id="tutorRestart" type="button">Start over</button>
         </div>
@@ -1984,9 +1985,36 @@
       document.querySelectorAll(".elias-avatar.speaking").forEach(face => face.classList.remove("speaking"));
     }
 
+    // Elias speaks with the device's own voice (free, no limits). He prefers a male English voice; if the device has none,
+    // the voice is made deeper. The learner can also pick a voice from the list.
+    const MALE_VOICE = /daniel|alex\b|fred\b|aaron|arthur|oliver|gordon|rishi|tom\b|david|mark\b|james|george|guy\b|ryan|richard|\bmale\b/i;
+    const FEMALE_VOICE = /samantha|karen|moira|tessa|victoria|zira|susan|hazel|fiona|allison|ava\b|kate\b|serena|martha|catherine|linda|heather|sara\b|nicky|joana|\bfemale\b/i;
+
+    function tutorVoices() {
+      return window.speechSynthesis ? speechSynthesis.getVoices().filter(voice => /^en/i.test(voice.lang)) : [];
+    }
+
     function tutorBestVoice() {
-      const english = speechSynthesis.getVoices().filter(voice => /^en/i.test(voice.lang));
-      return english.find(voice => /daniel|alex|fred|aaron|arthur|david|james|guy|ryan|mark|male/i.test(voice.name)) || english.find(voice => /^en-(us|gb)/i.test(voice.lang)) || english[0] || null;
+      const english = tutorVoices();
+      const picked = localStorage.getItem("my-sign-tutor-voice-name");
+      const chosen = picked && english.find(voice => voice.name === picked);
+      if (chosen) return chosen;
+      const others = english.filter(voice => !FEMALE_VOICE.test(voice.name));
+      return others.find(voice => MALE_VOICE.test(voice.name)) || others.find(voice => /^en-(us|gb)/i.test(voice.lang)) || others[0] || null;
+    }
+
+    // A male or hand-picked voice keeps its natural pitch; any other voice is made deeper so Elias sounds like a man.
+    function tutorPitch(voice) {
+      return voice && (MALE_VOICE.test(voice.name) || localStorage.getItem("my-sign-tutor-voice-name") === voice.name) ? .9 : .6;
+    }
+
+    function tutorFillVoices() {
+      const select = document.getElementById("tutorVoicePick");
+      const english = tutorVoices();
+      select.hidden = english.length < 2;
+      const picked = localStorage.getItem("my-sign-tutor-voice-name") || "";
+      select.replaceChildren(new Option("Voice: automatic (male)", ""), ...english.map(voice => new Option(voice.name, voice.name)));
+      select.value = english.some(voice => voice.name === picked) ? picked : "";
     }
 
     function tutorSpeak(text, bubble, force = false, rate = 0) {
@@ -1998,30 +2026,26 @@
         faces.forEach(face => face.classList.toggle("speaking", on));
         tutorStatus(on ? "Speaking…" : "Write to me in English");
       };
-      if (window.speechSynthesis && (tutorVoiceOn || force)) {
-        const say = new SpeechSynthesisUtterance(text.replace(/\s+/g, " "));
-        const voice = tutorBestVoice();
-        say.lang = voice?.lang || "en-US";
-        if (voice) say.voice = voice;
-        say.rate = rate || { beginner: .8, intermediate: .92, advanced: 1 }[document.getElementById("tutorLevel").value] || .9;
-        say.pitch = .9;
-        // If the device has no voice, or the browser blocks it, Elias still "talks" silently so the face never freezes.
-        const silent = () => {
-          if (id !== tutorSpeakId) return;
-          speechSynthesis.cancel();
-          setSpeaking(true);
-          setTimeout(() => setSpeaking(false), Math.min(4500, 700 + text.length * 40));
-        };
-        let started = false;
-        say.onstart = () => { started = true; setSpeaking(true); };
-        say.onend = () => setSpeaking(false);
-        say.onerror = () => { if (started) setSpeaking(false); else silent(); };
-        speechSynthesis.speak(say);
-        setTimeout(() => { if (!started) silent(); }, 1500);
-      } else {
+      // If the device has no voice, or the browser blocks it, Elias still "talks" silently so the face never freezes.
+      const silent = () => {
+        if (id !== tutorSpeakId) return;
+        if (window.speechSynthesis) speechSynthesis.cancel();
         setSpeaking(true);
         setTimeout(() => setSpeaking(false), Math.min(4500, 700 + text.length * 40));
-      }
+      };
+      if (!window.speechSynthesis || !(tutorVoiceOn || force)) { silent(); return; }
+      const say = new SpeechSynthesisUtterance(text.replace(/\s+/g, " "));
+      const voice = tutorBestVoice();
+      say.lang = voice?.lang || "en-US";
+      if (voice) say.voice = voice;
+      say.rate = rate || { beginner: .8, intermediate: .92, advanced: 1 }[document.getElementById("tutorLevel").value] || .9;
+      say.pitch = tutorPitch(voice);
+      let started = false;
+      say.onstart = () => { started = true; setSpeaking(true); };
+      say.onend = () => setSpeaking(false);
+      say.onerror = () => { if (started) setSpeaking(false); else silent(); };
+      speechSynthesis.speak(say);
+      setTimeout(() => { if (!started) silent(); }, 1500);
     }
 
     function tutorAddListen(bubble, text) {
@@ -2040,7 +2064,7 @@
     function tutorThinking(on) {
       document.querySelectorAll("#tutorPanel .elias-avatar.big, #tutorPanel .elias-avatar.huge").forEach(face => face.classList.toggle("thinking", on));
       if (on) tutorStatus("Thinking…");
-      else if (!document.querySelector(".elias-avatar.speaking")) tutorStatus("Write to me in English");
+      else if (document.getElementById("tutorStatus").textContent === "Thinking…") tutorStatus("Write to me in English");
     }
 
     function tutorSetVoice(on) {
@@ -2126,7 +2150,7 @@
         waiting.textContent = data.reply;
         tutorHistory.push({ role: "bot", text: data.reply });
         tutorAddListen(waiting, data.reply);
-        tutorSpeak(data.reply, waiting);
+        try { tutorSpeak(data.reply, waiting); } catch { /* a voice problem must never hide his written answer */ }
       } catch {
         waiting.textContent = "Sorry, I cannot answer right now. Please wait a minute and try again.";
         tutorHistory.pop();
@@ -2371,6 +2395,15 @@
     document.getElementById("tutorMic").hidden = !SpeechRec;
     document.getElementById("tutorMic").addEventListener("click", () => tutorHear(options => tutorSend(options[0])));
     document.getElementById("tutorVoice").addEventListener("click", () => tutorSetVoice(!tutorVoiceOn));
+    document.getElementById("tutorVoicePick").addEventListener("change", event => {
+      try { localStorage.setItem("my-sign-tutor-voice-name", event.target.value); } catch {}
+      tutorSpeak("Hello, my name is Elias.", null, true);
+    });
+    if (window.speechSynthesis) {
+      tutorFillVoices();
+      speechSynthesis.addEventListener?.("voiceschanged", tutorFillVoices);
+    }
+
     tutorSetVoice(tutorVoiceOn);
     if (window.speechSynthesis) speechSynthesis.getVoices();
     else document.getElementById("tutorVoice").hidden = true;
