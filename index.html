@@ -1373,7 +1373,7 @@
           <div class="field"><label for="changeNewPassword">New password</label><input id="changeNewPassword" name="newPassword" type="password" required minlength="8" maxlength="72" autocomplete="new-password"><small>At least 8 characters.</small></div>
           <div class="field"><label for="changeConfirmPassword">Repeat new password</label><input id="changeConfirmPassword" name="confirmPassword" type="password" required minlength="8" maxlength="72" autocomplete="new-password"></div>
           <button class="button" type="submit">Change password</button>
-        </form></section><section class="dashboard-panel danger-panel"><h2>Delete account</h2><p class="section-intro">Permanently delete your account, profile, picture, lessons, videos, and lesson requests. This cannot be undone.</p><button class="button danger small" type="button" data-delete-account>Delete my account</button></section>`;
+        </form></section><section class="dashboard-panel"><h2>Your role</h2><p class="section-intro">You are a ${account.role === "teacher" ? "tutor" : "learner"}. ${account.role === "teacher" ? "You can switch back to learner to request lessons from other tutors." : "Want to teach too? Switch to tutor with this same email. You can switch back any time. Or join with a different email as a tutor."}</p>${account.role === "teacher" ? "" : '<label class="role-option agreement-option"><input id="switchTaxTerms" type="checkbox"><span><strong>I accept responsibility for my own tax and legal obligations.</strong><span>I will follow applicable local tax and business rules for lessons I offer.</span></span></label>'}<button class="button outline small" type="button" data-switch-role="${account.role === "teacher" ? "learner" : "teacher"}">${account.role === "teacher" ? "Switch to learner" : "Become a tutor"}</button></section><section class="dashboard-panel danger-panel"><h2>Delete account</h2><p class="section-intro">Permanently delete your account, profile, picture, lessons, videos, and lesson requests. This cannot be undone.</p><button class="button danger small" type="button" data-delete-account>Delete my account</button></section>`;
         return;
       }
       if (dashboardTab === "community") {
@@ -2670,6 +2670,25 @@
         }
         await loadAccountData();
         showToast(decision.dataset.requestAction === "accepted" ? "Lesson request accepted." : "Lesson request declined.");
+        return;
+      }
+      const switchRole = event.target.closest("[data-switch-role]");
+      if (switchRole) {
+        const role = switchRole.dataset.switchRole;
+        const accepted = Boolean(document.getElementById("switchTaxTerms")?.checked);
+        if (role === "teacher" && !accepted) {
+          showToast("Please accept the tax and legal responsibility first.");
+          return;
+        }
+        switchRole.disabled = true;
+        const { error } = await db.rpc("switch_my_role", { p_role: role, p_accept_tax: accepted });
+        switchRole.disabled = false;
+        if (error) {
+          showToast(error.message);
+          return;
+        }
+        await loadAccountData();
+        showToast(role === "teacher" ? "You are now a tutor." : "You are now a learner.");
         return;
       }
       if (event.target.closest("[data-delete-account]")) {
